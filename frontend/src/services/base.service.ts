@@ -33,6 +33,6 @@ export abstract class BaseService<T> {
 	}
 
 	protected resolveURL(params?: FreeObject, fragment = '') {
-		return `${this.url}/${fragment}${params ? `?${new URLSearchParams(params).toString()}` : ''}`;
+		return `${this.url}${fragment.length > 0 ? `/${fragment}` : ''}${params ? `?${new URLSearchParams(params).toString()}` : ''}`;
 	}
 }
