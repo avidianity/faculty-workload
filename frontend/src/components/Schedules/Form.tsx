@@ -4,6 +4,7 @@ import { useHistory, useRouteMatch } from 'react-router';
 import { handleError, setValues } from '../../helpers';
 import { useMode, useNullable } from '../../hooks';
 import { scheduleService } from '../../services/schedule.service';
+// eslint-disable-next-line
 import Flatpickr from 'react-flatpickr';
 import dayjs from 'dayjs';
 import { useQuery } from 'react-query';
@@ -37,9 +38,12 @@ type Selected = {
 
 const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
+	// eslint-disable-next-line
 	const { data: rooms } = useQuery('rooms', () => roomService.fetch());
 	const { data: subjects } = useQuery('subjects', () => subjectService.fetch());
+	// eslint-disable-next-line
 	const { data: teachers } = useQuery('teachers', () => teacherService.fetch());
+	// eslint-disable-next-line
 	const { data: courses } = useQuery('courses', () => courseService.fetch());
 	const [selected, setSelected] = useState<Selected>({});
 	const { register, handleSubmit, setValue } = useForm<Inputs>();
