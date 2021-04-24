@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { FC } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -22,6 +23,7 @@ const List: FC<Props> = (props) => {
 			if (await Asker.danger('Are you sure you want to delete this teacher?')) {
 				await teacherService.delete(id);
 				toastr.info('Teacher has been deleted.', 'Notice');
+				refetch();
 			}
 		} catch (error) {
 			handleError(error);
@@ -37,6 +39,10 @@ const List: FC<Props> = (props) => {
 				items?.map((teacher) => ({
 					...teacher,
 					name: `${teacher.last_name}, ${teacher.first_name} ${teacher.middle_name}`,
+					availability: `${dayjs(teacher.availability_start, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
+						teacher.availability_end,
+						'HH:mm:ss'
+					).format('hh:mm A')}`,
 					actions: (
 						<div className='d-flex'>
 							<Link to={url(`${teacher.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
@@ -60,12 +66,24 @@ const List: FC<Props> = (props) => {
 					accessor: 'id',
 				},
 				{
+					title: 'Account No.',
+					accessor: 'account_number',
+				},
+				{
 					title: 'Name',
 					accessor: 'name',
 				},
 				{
 					title: 'Email',
 					accessor: 'email',
+				},
+				{
+					title: 'Employment Status',
+					accessor: 'employment_status',
+				},
+				{
+					title: 'Availability',
+					accessor: 'availability',
 				},
 				{
 					title: 'Actions',

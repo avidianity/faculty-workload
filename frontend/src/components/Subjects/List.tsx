@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { FC } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -19,9 +20,10 @@ const List: FC<Props> = (props) => {
 
 	const deleteItem = async (id: any) => {
 		try {
-			if (await Asker.danger('Are you sure you want to delete this subject?')) {
+			if (await Asker.danger('Are you sure you want to delete this Subject Offering?')) {
 				await subjectService.delete(id);
-				toastr.info('Subject has been deleted.', 'Notice');
+				toastr.info('Subject Offering has been deleted.', 'Notice');
+				refetch();
 			}
 		} catch (error) {
 			handleError(error);
@@ -31,7 +33,7 @@ const List: FC<Props> = (props) => {
 	return (
 		<Table
 			onRefresh={() => refetch()}
-			title='Subjects'
+			title='Subject Offerings'
 			loading={loading}
 			items={
 				items?.map((subject) => ({
@@ -51,6 +53,34 @@ const List: FC<Props> = (props) => {
 							</button>
 						</div>
 					),
+					lab_hours: subject.lab_hours
+						.split('|')
+						.map((date) => dayjs(date).format('hh:mm A'))
+						.join(' - '),
+					lec_hours: subject.lec_hours
+						.split('|')
+						.map((date) => dayjs(date).format('hh:mm A'))
+						.join(' - '),
+					semesters: (() => {
+						const semesters: string[] = [];
+
+						if (subject.semester_1st) {
+							semesters.push('1st');
+						}
+
+						if (subject.semester_2nd) {
+							semesters.push('2nd');
+						}
+
+						if (subject.semester_summer) {
+							semesters.push('Summer');
+						}
+
+						return semesters;
+					})().join(', '),
+					curriculum: `${subject?.curriculum?.start_year} - ${subject?.curriculum?.end_year}`,
+					courses: subject.courses?.map((course) => course.code).join(', '),
+					years: subject.years.join(', '),
 				})) || []
 			}
 			columns={[
@@ -59,12 +89,44 @@ const List: FC<Props> = (props) => {
 					accessor: 'id',
 				},
 				{
+					title: 'Prerequisites',
+					accessor: 'prerequisites',
+				},
+				{
 					title: 'Code',
 					accessor: 'code',
 				},
 				{
 					title: 'Description',
 					accessor: 'description',
+				},
+				{
+					title: 'Unit Credits',
+					accessor: 'units',
+				},
+				{
+					title: 'Lab Hours',
+					accessor: 'lab_hours',
+				},
+				{
+					title: 'Lec Hours',
+					accessor: 'lec_hours',
+				},
+				{
+					title: 'Semesters',
+					accessor: 'semesters',
+				},
+				{
+					title: 'Years Levels',
+					accessor: 'years',
+				},
+				{
+					title: 'Curriculum',
+					accessor: 'curriculum',
+				},
+				{
+					title: 'Courses',
+					accessor: 'courses',
 				},
 				{
 					title: 'Actions',

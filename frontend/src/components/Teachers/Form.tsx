@@ -1,16 +1,21 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
+import { EmploymentStatuses } from '../../constants';
 import { TeacherContract } from '../../contracts/teacher.contract';
 import { handleError, setValues } from '../../helpers';
 import { useMode, useNullable } from '../../hooks';
 import { teacherService } from '../../services/teacher.service';
+import Flatpickr from 'react-flatpickr';
+import dayjs from 'dayjs';
 
 type Props = {};
 
 const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
 	const { register, handleSubmit, setValue } = useForm<TeacherContract>();
+	const [availabilityStart, setAvailabilityStart] = useNullable<Date>();
+	const [availabilityEnd, setAvailabilityEnd] = useNullable<Date>();
 	const [mode, setMode] = useMode();
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
@@ -19,6 +24,14 @@ const Form: FC<Props> = (props) => {
 	const submit = async (payload: TeacherContract) => {
 		setProcessing(true);
 		try {
+			if (availabilityStart) {
+				payload.availability_start = dayjs(availabilityStart).format('HH:mm:ss');
+			}
+
+			if (availabilityEnd) {
+				payload.availability_end = dayjs(availabilityEnd).format('HH:mm:ss');
+			}
+
 			await (mode === 'Add' ? teacherService.create(payload) : teacherService.update(id, payload));
 			toastr.info('Teacher saved successfully.', 'Notice');
 		} catch (error) {
@@ -34,6 +47,8 @@ const Form: FC<Props> = (props) => {
 			setID(teacher.id!);
 
 			setValues(teacher, setValue);
+			setAvailabilityStart(dayjs(teacher.availability_start, 'HH:mm:ss').toDate());
+			setAvailabilityEnd(dayjs(teacher.availability_end, 'HH:mm:ss').toDate());
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -56,7 +71,7 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='first_name'>First Name</label>
 							<input
 								type='text'
@@ -67,7 +82,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='middle_name'>Middle Name</label>
 							<input
 								type='text'
@@ -78,7 +93,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='last_name'>Last Name</label>
 							<input
 								type='text'
@@ -96,6 +111,66 @@ const Form: FC<Props> = (props) => {
 								{...register('email')}
 								name='email'
 								id='email'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='employment_status'>Employment Status</label>
+							<select
+								{...register('employment_status')}
+								name='employment_status'
+								id='employment_status'
+								className='form-control'
+								disabled={processing}>
+								<option> -- Select -- </option>
+								{EmploymentStatuses.map((status, index) => (
+									<option value={status} key={index}>
+										{status}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='col-12'>
+							<h5>Availability</h5>
+						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='availability_start'>Start Time</label>
+							<Flatpickr
+								options={{
+									altFormat: 'G:i K',
+									mode: 'time',
+									altInput: true,
+								}}
+								value={availabilityStart || ''}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setAvailabilityStart(dates[0]);
+									}
+								}}
+								name='availability_start'
+								id='availability_start'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='availability_end'>End Time</label>
+							<Flatpickr
+								options={{
+									altFormat: 'G:i K',
+									mode: 'time',
+									minTime: availabilityStart || undefined,
+									altInput: true,
+								}}
+								value={availabilityEnd || ''}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setAvailabilityEnd(dates[0]);
+									}
+								}}
+								name='availability_end'
+								id='availability_end'
 								className='form-control'
 								disabled={processing}
 							/>

@@ -11,8 +11,19 @@ class Course extends Model
 
     protected $fillable = [
         'uuid',
-        'name',
+        'code',
         'description',
         'year',
+        'section',
     ];
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class)->withTimestamps();
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }

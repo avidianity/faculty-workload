@@ -7,11 +7,11 @@ export const routes = {
 	LOGIN: '/',
 	USERS: '/users',
 	COURSES: '/courses',
-	EMAILS: '/emails',
 	ROOMS: '/rooms',
 	SCHEDULES: '/schedules',
 	SUBJECTS: '/subjects',
 	TEACHERS: '/teachers',
+	CURRICULA: '/curricula',
 };
 
 export const views: RouteProps[] = [

@@ -14,7 +14,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return Schedule::with('teacher', 'room', 'subject')->get();
+        return Schedule::with('teacher', 'room', 'subject.curriculum', 'course')->get();
     }
 
     /**
@@ -36,7 +36,7 @@ class ScheduleController extends Controller
      */
     public function show(Schedule $schedule)
     {
-        $schedule->load('teacher', 'room', 'subject');
+        $schedule->load('teacher', 'room', 'subject.curriculum', 'course');
         return $schedule;
     }
 
@@ -51,7 +51,7 @@ class ScheduleController extends Controller
     {
         $schedule->update($request->all());
 
-        $schedule->load('teacher', 'room', 'subject');
+        $schedule->load('teacher', 'room', 'subject.curriculum', 'course');
 
         return $schedule;
     }

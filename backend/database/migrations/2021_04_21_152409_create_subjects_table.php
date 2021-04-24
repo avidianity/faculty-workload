@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Course;
+use App\Models\Curriculum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,9 +18,17 @@ class CreateSubjectsTable extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->string('prerequisites');
             $table->string('code');
             $table->string('description');
             $table->unsignedTinyInteger('units');
+            $table->string('lab_hours');
+            $table->string('lec_hours');
+            $table->boolean('semester_1st');
+            $table->boolean('semester_2nd');
+            $table->boolean('semester_summer');
+            $table->foreignIdFor(new Curriculum());
+            $table->json('years');
             $table->timestamps();
         });
     }

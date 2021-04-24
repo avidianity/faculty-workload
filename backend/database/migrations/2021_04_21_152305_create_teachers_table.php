@@ -15,10 +15,18 @@ class CreateTeachersTable extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
+            $table->string('account_number')->index();
             $table->string('first_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('last_name');
             $table->string('email');
+            $table->enum('employment_status', [
+                'Part Time',
+                'Designee',
+                'Temporary Substitution',
+            ]);
+            $table->time('availability_start');
+            $table->time('availability_end');
             $table->timestamps();
         });
     }

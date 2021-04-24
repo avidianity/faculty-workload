@@ -4,6 +4,7 @@ import { outIf } from '../helpers';
 import { useURL } from '../hooks';
 import { routes } from '../routes';
 import Courses from './Courses';
+import Curricula from './Curricula';
 import Rooms from './Rooms';
 import Schedules from './Schedules';
 import Navbar from './Shared/Navbar';
@@ -44,6 +45,10 @@ const Dashboard: FC<Props> = (props) => {
 		{
 			path: url(routes.SCHEDULES),
 			component: Schedules,
+		},
+		{
+			path: url(routes.CURRICULA),
+			component: Curricula,
 		},
 	];
 

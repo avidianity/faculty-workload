@@ -43,7 +43,7 @@ const Table: FC<Props> = ({ columns, title, buttons, casts, loading, onRefresh, 
 	});
 
 	return (
-		<div className='container'>
+		<div className='container-fluid'>
 			<div className='card shadow'>
 				<div className='card-header d-flex align-items-center'>
 					<h4 className='card-title'>{title}</h4>
@@ -58,7 +58,7 @@ const Table: FC<Props> = ({ columns, title, buttons, casts, loading, onRefresh, 
 					</button>
 					{buttons}
 				</div>
-				<div className='card-body table-responsive'>
+				<div className={`card-body table-responsive`}>
 					<table id={id} className='table table-hover'>
 						<thead>
 							<tr>

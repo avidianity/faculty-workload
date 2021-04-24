@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CourseController extends Controller
 {
@@ -25,7 +26,13 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        return Course::create($request->all());
+        $data = $request->all();
+
+        if (!$this->validateCourse($data)) {
+            return response(['message' => 'Course already exists.'], 403);
+        }
+
+        return Course::create($data);
     }
 
     /**
@@ -48,7 +55,13 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        $course->update($request->all());
+        $data = $request->all();
+
+        if (!$this->validateCourse($data, ['id' => $course->id])) {
+            return response(['message' => 'Course already exists.'], 403);
+        }
+
+        $course->update($data);
 
         return $course;
     }
@@ -64,5 +77,27 @@ class CourseController extends Controller
         $course->delete();
 
         return response('', 204);
+    }
+
+    protected function validateCourse($data, $exceptions = [])
+    {
+        $builder = new Course();
+
+        $fields = [
+            'code',
+            'description',
+            'year',
+            'section',
+        ];
+
+        foreach ($fields as $field) {
+            $builder = $builder->where($field, $data[$field]);
+        }
+
+        foreach ($exceptions as $field => $exception) {
+            $builder = $builder->where($field, '!=', $exception);
+        }
+
+        return $builder->count() === 0;
     }
 }

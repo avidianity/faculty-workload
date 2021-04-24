@@ -11,8 +11,7 @@ class Room extends Model
 
     protected $fillable = [
         'uuid',
-        'name',
-        'description',
+        'code',
     ];
 
     protected static function booted()

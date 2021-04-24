@@ -59,7 +59,13 @@ export function handleError(error: any) {
 	if (error) {
 		if (error.response) {
 			const response = error.response;
+			if (response.data.errors) {
+				return Object.values<string[]>(response.data.errors).map((errors) => errors.map((error) => toastr.error(error)));
+			}
 			if (response.data.message) {
+				if (response.status === 500) {
+					return toastr.error(response.data.message);
+				}
 				if (isArray(response.data.message)) {
 					return response.data.message.forEach((message: string) =>
 						toastr.error(sentencify(message), undefined, { extendedTimeOut: 2000 })

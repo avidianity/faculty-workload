@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Course;
+use App\Models\Subject;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCoursesTable extends Migration
+class CreateCourseSubjectTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +15,13 @@ class CreateCoursesTable extends Migration
      */
     public function up()
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('course_subject', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
-            $table->string('code');
-            $table->string('description');
-            $table->unsignedTinyInteger('year');
-            $table->unsignedTinyInteger('section');
+            $table->foreignIdFor(new Course());
+            $table->foreignIdFor(new Subject());
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -31,6 +31,6 @@ class CreateCoursesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('courses');
+        Schema::dropIfExists('course_subjects');
     }
 }

@@ -78,7 +78,8 @@ const Form: FC<Props> = (props) => {
 								{...register('password')}
 								name='password'
 								id='password'
-								className='form-control disabled={processing}'
+								className='form-control'
+								disabled={processing}
 							/>
 						</div>
 						<div className='form-group col-12'>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SubjectController;
@@ -28,6 +29,7 @@ Route::prefix('/auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResources([
         'courses' => CourseController::class,
+        'curricula' => CurriculumController::class,
         'rooms' => RoomController::class,
         'schedules' => ScheduleController::class,
         'subjects' => SubjectController::class,

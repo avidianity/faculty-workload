@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        return Subject::all();
+        return Subject::with('courses', 'curriculum')->get();
     }
 
     /**
@@ -25,7 +26,19 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        return Subject::create($request->all());
+        $data = $request->all();
+
+        if (!$this->validateSubject($data)) {
+            return response(['message' => 'Subject already exists.'], 403);
+        }
+
+        $subject = Subject::create($data);
+
+        $subject->courses()->sync(Course::findMany(collect($data['courses'])->map(function ($course) {
+            return $course['id'];
+        })));
+
+        return $subject;
     }
 
     /**
@@ -36,6 +49,7 @@ class SubjectController extends Controller
      */
     public function show(Subject $subject)
     {
+        $subject->load('courses', 'curriculum');
         return $subject;
     }
 
@@ -48,7 +62,17 @@ class SubjectController extends Controller
      */
     public function update(Request $request, Subject $subject)
     {
-        $subject->update($request->all());
+        $data = $request->all();
+
+        if (!$this->validateSubject($data, ['id' => $subject->id])) {
+            return response(['message' => 'Subject already exists.'], 403);
+        }
+
+        $subject->update($data);
+
+        $subject->courses()->sync(Course::findMany(collect($request->get('courses', []))->map(function ($course) {
+            return $course['id'];
+        })));
 
         return $subject;
     }
@@ -64,5 +88,27 @@ class SubjectController extends Controller
         $subject->delete();
 
         return response('', 204);
+    }
+
+    protected function validateSubject($data, $exceptions = [])
+    {
+        $builder = new Subject();
+
+        $fields = [
+            'semester_1st',
+            'semester_2nd',
+            'semester_summer',
+            'curriculum_id',
+        ];
+
+        foreach ($fields as $field) {
+            $builder = $builder->where($field, $data[$field]);
+        }
+
+        foreach ($exceptions as $field => $exception) {
+            $builder = $builder->where($field, '!=', $exception);
+        }
+
+        return $builder->count() === 0;
     }
 }

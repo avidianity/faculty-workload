@@ -61,20 +61,9 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='name'>Name</label>
-							<input type='text' {...register('name')} name='name' id='name' className='form-control' disabled={processing} />
-						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='description'>Description</label>
-							<input
-								type='text'
-								{...register('description')}
-								name='description'
-								id='description'
-								className='form-control'
-								disabled={processing}
-							/>
+						<div className='form-group col-12'>
+							<label htmlFor='code'>Code</label>
+							<input type='text' {...register('code')} name='code' id='code' className='form-control' disabled={processing} />
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Course;
 use App\Models\Room;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -23,6 +24,14 @@ class CreateSchedulesTable extends Migration
             $table->foreignIdFor(new Teacher());
             $table->foreignIdFor(new Subject());
             $table->foreignIdFor(new Room());
+            $table->foreignIdFor(new Course());
+            $table->enum('semester', [
+                '1st Semester',
+                '2nd Semester',
+                'Summer',
+            ]);
+            $table->unsignedTinyInteger('slot');
+            $table->json('days');
             $table->timestamps();
         });
     }

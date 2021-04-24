@@ -24,6 +24,7 @@ const List: FC<Props> = (props) => {
 			if (await Asker.danger('Are you sure you want to delete this user?')) {
 				await userService.delete(id);
 				toastr.info('User has been deleted.', 'Notice');
+				refetch();
 			}
 		} catch (error) {
 			handleError(error);

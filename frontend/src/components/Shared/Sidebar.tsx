@@ -17,12 +17,12 @@ const Sidebar: FC<Props> = (props) => {
 		{
 			to: routes.COURSES,
 			icon: 'pe-7s-rocket',
-			title: 'Courses',
+			title: 'Academic Programs',
 		},
 		{
-			to: routes.EMAILS,
-			icon: 'pe-7s-diamond',
-			title: 'Emails',
+			to: routes.CURRICULA,
+			icon: 'pe-7s-light',
+			title: 'Curricula',
 		},
 		{
 			to: routes.ROOMS,
@@ -37,7 +37,7 @@ const Sidebar: FC<Props> = (props) => {
 		{
 			to: routes.SUBJECTS,
 			icon: 'pe-7s-display2',
-			title: 'Subjects',
+			title: 'Subject Offerings',
 		},
 		{
 			to: routes.TEACHERS,

@@ -19,9 +19,10 @@ const List: FC<Props> = (props) => {
 
 	const deleteItem = async (id: any) => {
 		try {
-			if (await Asker.danger('Are you sure you want to delete this course?')) {
+			if (await Asker.danger('Are you sure you want to delete this Academic Program?')) {
 				await courseService.delete(id);
-				toastr.info('Course has been deleted.', 'Notice');
+				toastr.info('Academic Program has been deleted.', 'Notice');
+				refetch();
 			}
 		} catch (error) {
 			handleError(error);
@@ -31,7 +32,7 @@ const List: FC<Props> = (props) => {
 	return (
 		<Table
 			onRefresh={() => refetch()}
-			title='Courses'
+			title='Academic Programs'
 			loading={loading}
 			items={
 				items?.map((course) => ({
@@ -59,16 +60,20 @@ const List: FC<Props> = (props) => {
 					accessor: 'id',
 				},
 				{
-					title: 'Name',
-					accessor: 'name',
+					title: 'Program Code',
+					accessor: 'code',
 				},
 				{
-					title: 'Description',
+					title: 'Program Description',
 					accessor: 'description',
 				},
 				{
-					title: 'Year',
+					title: 'Year Level',
 					accessor: 'year',
+				},
+				{
+					title: 'Section',
+					accessor: 'section',
 				},
 				{
 					title: 'Actions',

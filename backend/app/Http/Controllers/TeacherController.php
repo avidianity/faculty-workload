@@ -25,7 +25,17 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
-        return Teacher::create($request->all());
+        $data = $request->all();
+
+        $teacher = Teacher::whereFirstName($data['first_name'])
+            ->whereLastName($data['last_name'])
+            ->first();
+
+        if ($teacher) {
+            return response(['message' => 'Teacher already exists.'], 400);
+        }
+
+        return Teacher::create($data);
     }
 
     /**
@@ -48,7 +58,20 @@ class TeacherController extends Controller
      */
     public function update(Request $request, Teacher $teacher)
     {
-        $teacher->update($request->all());
+        $data = $request->all();
+
+        $exists = Teacher::whereFirstName($data['first_name'])
+            ->whereLastName($data['last_name'])
+            ->where('id', '!=', $teacher->id)
+            ->first();
+
+        if ($exists) {
+            return response(['message' => 'Teacher already exists.'], 400);
+        }
+
+        $teacher->update($data);
+
+        return $teacher;
     }
 
     /**

@@ -2,26 +2,67 @@ import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
 import { v4 } from 'uuid';
-import { SubjectContract } from '../../contracts/subject.contract';
+import { CurriculumContract } from '../../contracts/curriculum.contract';
 import { handleError, setValues } from '../../helpers';
-import { useMode, useNullable } from '../../hooks';
+import { useArray, useMode, useNullable } from '../../hooks';
 import { subjectService } from '../../services/subject.service';
+import Flatpickr from 'react-flatpickr';
+import { CourseContract } from '../../contracts/course.contract';
+import { SubjectContract } from '../../contracts/subject.contract';
+import { useQuery } from 'react-query';
+import { curriculumService } from '../../services/curriculum.service';
+import { courseService } from '../../services/course.service';
+import dayjs from 'dayjs';
 
 type Props = {};
 
+type Inputs = {
+	uuid: string;
+	prerequisites: string;
+	code: string;
+	description: string;
+	units: number;
+	lab_hours: string;
+	lec_hours: string;
+	semester_1st: boolean;
+	semester_2nd: boolean;
+	semester_summer: boolean;
+	curriculum_id: number;
+};
+
 const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
-	const { register, handleSubmit, setValue } = useForm<SubjectContract>();
+	const { data: curricula } = useQuery('curricula', () => curriculumService.fetch());
+	const { data: coursesList } = useQuery('courses', () => courseService.fetch());
+	const [labHoursStart, setLabHoursStart] = useNullable<Date>();
+	const [labHoursEnd, setLabHoursEnd] = useNullable<Date>();
+	const [lecHoursStart, setLecHoursStart] = useNullable<Date>();
+	const [lecHoursEnd, setLecHoursEnd] = useNullable<Date>();
+	const [curriculum, setCurriculum] = useNullable<CurriculumContract>();
+	const { register, handleSubmit, setValue } = useForm<Inputs>();
 	const [mode, setMode] = useMode();
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
+	const [years, setYears] = useArray<string>();
+	const [courses, setCourses] = useArray<CourseContract>();
 
 	const submit = async (payload: SubjectContract) => {
 		setProcessing(true);
 		try {
 			if (mode === 'Add') {
 				payload.uuid = v4();
+			}
+
+			payload.courses = courses;
+			payload.years = years;
+
+			if (labHoursStart && labHoursEnd) {
+				payload.lab_hours = `${dayjs(labHoursStart).toJSON()}|${dayjs(labHoursEnd).toJSON()}`;
+			}
+
+			if (lecHoursStart && lecHoursEnd) {
+				payload.lec_hours = `${dayjs(lecHoursStart).toJSON()}|${dayjs(lecHoursEnd).toJSON()}`;
 			}
 
 			await (mode === 'Add' ? subjectService.create(payload) : subjectService.update(id, payload));
@@ -39,6 +80,15 @@ const Form: FC<Props> = (props) => {
 			setID(subject.id!);
 
 			setValues(subject, setValue);
+			setYears(subject.years);
+			setCourses(subject.courses!);
+			setCurriculum(subject.curriculum!);
+			const [labHoursStart, labHoursEnd] = subject.lab_hours.split('|').map((date) => dayjs(date).toDate());
+			const [lecHoursStart, lecHoursEnd] = subject.lec_hours.split('|').map((date) => dayjs(date).toDate());
+			setLabHoursStart(labHoursStart);
+			setLabHoursEnd(labHoursEnd);
+			setLecHoursStart(lecHoursStart);
+			setLecHoursEnd(lecHoursEnd);
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -61,11 +111,58 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='curriculum_id'>Curricula</label>
+							<select
+								{...register('curriculum_id')}
+								name='curriculum_id'
+								id='curriculum_id'
+								className='form-control'
+								onChange={(e) => {
+									const curriculum = curricula?.find((curriculum) => curriculum.id === e.target.value.toNumber());
+									if (curriculum) {
+										setCurriculum(curriculum);
+									} else {
+										setCurriculum(null);
+									}
+								}}>
+								<option> -- Select -- </option>
+								{curricula?.map((curriculum, index) => (
+									<option value={curriculum.id} key={index}>
+										{curriculum.start_year} - {curriculum.end_year}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label>School Year</label>
+							<select className='form-control' disabled>
+								{curriculum ? (
+									<option>
+										{dayjs(curriculum.start_school_date).format('MMMM DD, YYYY')} -{' '}
+										{dayjs(curriculum.end_school_date).format('MMMM DD, YYYY')}
+									</option>
+								) : (
+									<option> -- N/A -- </option>
+								)}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
+							<label htmlFor='prerequisites'>Prerequisites</label>
+							<input
+								type='text'
+								{...register('prerequisites')}
+								name='prerequisites'
+								id='prerequisites'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
 							<label htmlFor='code'>Code</label>
 							<input type='text' {...register('code')} name='code' id='code' className='form-control' disabled={processing} />
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
 							<label htmlFor='description'>Description</label>
 							<input
 								type='text'
@@ -76,8 +173,8 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
-							<label htmlFor='units'>Units</label>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
+							<label htmlFor='units'>Unit Credits</label>
 							<input
 								type='number'
 								{...register('units')}
@@ -86,6 +183,167 @@ const Form: FC<Props> = (props) => {
 								className='form-control'
 								disabled={processing}
 							/>
+						</div>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
+							<label>Lab Hours Start</label>
+							<Flatpickr
+								options={{
+									mode: 'time',
+									altInput: true,
+									altFormat: 'G:i K',
+								}}
+								value={labHoursStart || ''}
+								className='form-control'
+								disabled={processing}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setLabHoursStart(dates[0]);
+									}
+								}}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
+							<label>Lab Hours End</label>
+							<Flatpickr
+								options={{
+									mode: 'time',
+									altInput: true,
+									altFormat: 'G:i K',
+									minTime: labHoursStart || undefined,
+								}}
+								value={labHoursEnd || ''}
+								className='form-control'
+								disabled={processing}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setLabHoursEnd(dates[0]);
+									}
+								}}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
+							<label>Lec Hours Start</label>
+							<Flatpickr
+								options={{
+									mode: 'time',
+									altInput: true,
+									altFormat: 'G:i K',
+								}}
+								value={lecHoursStart || ''}
+								className='form-control'
+								disabled={processing}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setLecHoursStart(dates[0]);
+									}
+								}}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6 col-lg-3'>
+							<label>Lec Hours End</label>
+							<Flatpickr
+								options={{
+									mode: 'time',
+									altInput: true,
+									altFormat: 'G:i K',
+									minTime: lecHoursStart || undefined,
+								}}
+								value={lecHoursEnd || ''}
+								className='form-control'
+								disabled={processing}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setLecHoursEnd(dates[0]);
+									}
+								}}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<h4>Semesters</h4>
+							<div className='position-relative form-check'>
+								<label className='form-check-label'>
+									<input
+										type='checkbox'
+										{...register('semester_1st')}
+										name='semester_1st'
+										className='form-check-input'
+										disabled={processing}
+									/>{' '}
+									1st Semester
+								</label>
+							</div>
+							<div className='position-relative form-check'>
+								<label className='form-check-label'>
+									<input
+										type='checkbox'
+										{...register('semester_2nd')}
+										name='semester_2nd'
+										className='form-check-input'
+										disabled={processing}
+									/>{' '}
+									2nd Semester
+								</label>
+							</div>
+							<div className='position-relative form-check'>
+								<label className='form-check-label'>
+									<input
+										type='checkbox'
+										{...register('semester_summer')}
+										name='semester_summer'
+										className='form-check-input'
+										disabled={processing}
+									/>{' '}
+									Summer
+								</label>
+							</div>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<h4>Year Levels</h4>
+							{['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'].map((year, index) => (
+								<div className='position-relative form-check'>
+									<label className='form-check-label'>
+										<input
+											type='checkbox'
+											className='form-check-input'
+											disabled={processing}
+											checked={years.includes(year)}
+											onChange={(e) => {
+												if (years.includes(year)) {
+													years.splice(years.indexOf(year), 1);
+													setYears([...years]);
+												} else {
+													setYears([...years, year]);
+												}
+											}}
+										/>{' '}
+										{year}
+									</label>
+								</div>
+							))}
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<h4>Courses</h4>
+							{coursesList?.map((course, index) => (
+								<div className='position-relative form-check' key={index}>
+									<label className='form-check-label'>
+										<input
+											type='checkbox'
+											className='form-check-input'
+											disabled={processing}
+											checked={courses.find((c) => c.id === course.id) !== undefined}
+											onChange={() => {
+												if (courses.find((c) => c.id === course.id) !== undefined) {
+													courses.splice(courses.indexOf(course), 1);
+													setCourses([...courses]);
+												} else {
+													setCourses([...courses, course]);
+												}
+											}}
+										/>{' '}
+										{course.code}
+									</label>
+								</div>
+							))}
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>
