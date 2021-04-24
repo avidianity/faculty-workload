@@ -39,7 +39,7 @@ const List: FC<Props> = (props) => {
 				items?.map((schedule) => ({
 					...schedule,
 					teacher: `${schedule.teacher?.last_name}, ${schedule.teacher?.first_name} ${schedule.teacher?.middle_name}`,
-					employement_status: `${schedule.teacher?.employment_status}`,
+					employment_status: `${schedule.teacher?.employment_status}`,
 					subject: schedule.subject?.code,
 					room: schedule.room?.code,
 					course_code: schedule.course?.code,

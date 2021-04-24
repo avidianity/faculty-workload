@@ -16,6 +16,10 @@ const Login: FC<Props> = (props) => {
 
 	const state = State.getInstance();
 
+	if (state.has('token') && state.has('user')) {
+		history.push(routes.DASHBOARD);
+	}
+
 	const submit = async (payload: UserContract) => {
 		setProcessing(true);
 		try {

@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
-import { handleError, setValues } from '../../helpers';
-import { useMode, useNullable } from '../../hooks';
+import { handleError, outIf, setValues } from '../../helpers';
+import { useArray, useMode, useNullable } from '../../hooks';
 import { scheduleService } from '../../services/schedule.service';
-// eslint-disable-next-line
 import Flatpickr from 'react-flatpickr';
 import dayjs from 'dayjs';
 import { useQuery } from 'react-query';
@@ -38,13 +37,11 @@ type Selected = {
 
 const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
-	// eslint-disable-next-line
 	const { data: rooms } = useQuery('rooms', () => roomService.fetch());
 	const { data: subjects } = useQuery('subjects', () => subjectService.fetch());
-	// eslint-disable-next-line
 	const { data: teachers } = useQuery('teachers', () => teacherService.fetch());
-	// eslint-disable-next-line
 	const { data: courses } = useQuery('courses', () => courseService.fetch());
+	const [days, setDays] = useArray<string>();
 	const [selected, setSelected] = useState<Selected>({});
 	const { register, handleSubmit, setValue } = useForm<Inputs>();
 	const [startTime, setStartTime] = useNullable<Date>();
@@ -65,6 +62,8 @@ const Form: FC<Props> = (props) => {
 				payload.end_time = dayjs(endTime).format('HH:mm:ss');
 			}
 
+			payload.days = days;
+
 			await (mode === 'Add' ? scheduleService.create(payload) : scheduleService.update(id, payload));
 			toastr.info('Schedule saved successfully.', 'Notice');
 		} catch (error) {
@@ -82,6 +81,10 @@ const Form: FC<Props> = (props) => {
 			setValues(schedule, setValue);
 			setStartTime(dayjs(schedule.start_time, 'HH:mm:ss').toDate());
 			setEndTime(dayjs(schedule.end_time, 'HH:mm:ss').toDate());
+			setSelected({
+				...schedule,
+			});
+			setDays(schedule.days);
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -116,9 +119,13 @@ const Form: FC<Props> = (props) => {
 
 									if (subject) {
 										setSelected({ ...selected, subject });
+									} else {
+										delete selected.subject;
+										setSelected({ ...selected });
 									}
 								}}
 								disabled={processing}>
+								<option> -- Select -- </option>
 								{subjects?.map((subject, index) => (
 									<option value={subject.id} key={index}>
 										{subject.description}
@@ -154,6 +161,216 @@ const Form: FC<Props> = (props) => {
 								}
 							/>
 						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label htmlFor='course_id'>Course</label>
+							<select
+								{...register('course_id')}
+								name='course_id'
+								id='course_id'
+								className='form-control'
+								onChange={(e) => {
+									const course = courses?.find((course) => course.id === e.target.value.toNumber());
+
+									if (course) {
+										setSelected({ ...selected, course });
+									} else {
+										delete selected.course;
+										setSelected({ ...selected });
+									}
+								}}
+								disabled={processing}>
+								<option> -- Select -- </option>
+								{courses?.map((course, index) => (
+									<option value={course.id} key={index}>
+										{course.code}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label>Course Description</label>
+							<input
+								type='text'
+								disabled
+								className='form-control'
+								value={selected.course ? selected.course.description : ''}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label>Year Level</label>
+							<input type='text' disabled className='form-control' value={selected.course ? selected.course.year : ''} />
+						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label>Section</label>
+							<input type='text' disabled className='form-control' value={selected.course ? selected.course.section : ''} />
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<h4>Semesters</h4>
+							<div className='position-relative form-check'>
+								<label className={`form-check-label ${outIf(selected.subject?.semester_1st === false, 'text-muted')}`}>
+									<input
+										{...register('semester')}
+										name='semester'
+										type='radio'
+										className='form-check-input'
+										value='1st Semester'
+										disabled={processing || selected.subject?.semester_1st === false}
+									/>
+									1st Semester
+								</label>
+							</div>
+							<div className='position-relative form-check'>
+								<label className={`form-check-label ${outIf(selected.subject?.semester_2nd === false, 'text-muted')}`}>
+									<input
+										{...register('semester')}
+										name='semester'
+										type='radio'
+										className='form-check-input'
+										value='2nd Semester'
+										disabled={processing || selected.subject?.semester_2nd === false}
+									/>
+									2nd Semester
+								</label>
+							</div>
+							<div className='position-relative form-check'>
+								<label className={`form-check-label ${outIf(selected.subject?.semester_summer === false, 'text-muted')}`}>
+									<input
+										{...register('semester')}
+										name='semester'
+										type='radio'
+										className='form-check-input'
+										value='Summer'
+										disabled={processing || selected.subject?.semester_summer === false}
+									/>
+									Summer
+								</label>
+							</div>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='teacher_id'>Teacher</label>
+							<select
+								{...register('teacher_id')}
+								name='teacher_id'
+								id='teacher_id'
+								className='form-control'
+								onChange={(e) => {
+									const teacher = teachers?.find((teacher) => teacher.id === e.target.value.toNumber());
+
+									if (teacher) {
+										setSelected({ ...selected, teacher });
+									} else {
+										delete selected.teacher;
+										setSelected({ ...selected });
+									}
+								}}
+								disabled={processing}>
+								<option> -- Select -- </option>
+								{teachers?.map((teacher, index) => (
+									<option value={teacher.id} key={index}>
+										{teacher.last_name}, {teacher.first_name} {teacher.middle_name}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label>Employment Status</label>
+							<input
+								type='text'
+								disabled
+								className='form-control'
+								value={selected.teacher ? selected.teacher.employment_status : ''}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='room_id'>Room</label>
+							<select {...register('room_id')} name='room_id' id='room_id' className='form-control' disabled={processing}>
+								<option> -- Select -- </option>
+								{rooms?.map((room, index) => (
+									<option value={room.id} key={index}>
+										{room.code}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='slot'>Slot</label>
+							<input
+								{...register('slot')}
+								type='number'
+								name='slot'
+								id='slot'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label>Days</label>
+							{['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, index) => (
+								<div className='position-relative form-check' key={index}>
+									<label className='form-check-label'>
+										<input
+											type='checkbox'
+											className='form-check-input'
+											checked={days.includes(day)}
+											onChange={(e) => {
+												if (days.includes(day)) {
+													days.splice(days.indexOf(day), 1);
+													setDays([...days]);
+												} else {
+													setDays([...days, day]);
+												}
+											}}
+											disabled={processing}
+										/>{' '}
+										{day}
+									</label>
+								</div>
+							))}
+						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='start_time'>Start Time</label>
+							<Flatpickr
+								options={{
+									altFormat: 'G:i K',
+									mode: 'time',
+									altInput: true,
+									minTime: selected.teacher ? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate() : undefined,
+									maxDate: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
+								}}
+								value={startTime || undefined}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setStartTime(dates[0]);
+									}
+								}}
+								name='start_time'
+								id='start_time'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='end_time'>End Time</label>
+							<Flatpickr
+								options={{
+									altFormat: 'G:i K',
+									mode: 'time',
+									altInput: true,
+									minTime: startTime || undefined,
+									maxDate: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
+								}}
+								value={endTime || undefined}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setEndTime(dates[0]);
+									}
+								}}
+								name='end_time'
+								id='end_time'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>
 								{processing ? <i className='fas fa-circle-notch fa-spin'></i> : 'Save'}
@@ -167,82 +384,3 @@ const Form: FC<Props> = (props) => {
 };
 
 export default Form;
-
-// const t = (
-// 	<>
-// 		<div className='form-group col-12 col-md-6'>
-// 			<label htmlFor='start_time'>Start Time</label>
-// 			<Flatpickr
-// 				options={{
-// 					altFormat: 'G:i K',
-// 					mode: 'time',
-// 					altInput: true,
-// 				}}
-// 				value={startTime || undefined}
-// 				onChange={(dates) => {
-// 					if (dates.length > 0) {
-// 						setStartTime(dates[0]);
-// 					}
-// 				}}
-// 				name='start_time'
-// 				id='start_time'
-// 				className='form-control'
-// 				disabled={processing}
-// 			/>
-// 		</div>
-// 		<div className='form-group col-12 col-md-6'>
-// 			<label htmlFor='end_time'>End Time</label>
-// 			<Flatpickr
-// 				options={{
-// 					altFormat: 'G:i K',
-// 					mode: 'time',
-// 					altInput: true,
-// 					minTime: startTime || undefined,
-// 				}}
-// 				value={endTime || undefined}
-// 				onChange={(dates) => {
-// 					if (dates.length > 0) {
-// 						setEndTime(dates[0]);
-// 					}
-// 				}}
-// 				name='end_time'
-// 				id='end_time'
-// 				className='form-control'
-// 				disabled={processing}
-// 			/>
-// 		</div>
-// 		<div className='form-group col-12 col-md-4'>
-// 			<label htmlFor='room_id'>Room</label>
-// 			<select {...register('room_id')} name='room_id' id='room_id' className='form-control'>
-// 				<option> -- Select -- </option>
-// 				{rooms.map((room, index) => (
-// 					<option value={room.id} key={index}>
-// 						{room.code}
-// 					</option>
-// 				))}
-// 			</select>
-// 		</div>
-// 		<div className='form-group col-12 col-md-4'>
-// 			<label htmlFor='teacher_id'>Teacher</label>
-// 			<select {...register('teacher_id')} name='teacher_id' id='teacher_id' className='form-control'>
-// 				<option> -- Select -- </option>
-// 				{teachers.map((teacher, index) => (
-// 					<option value={teacher.id} key={index}>
-// 						{teacher?.last_name}, {teacher.first_name} {teacher.middle_name}
-// 					</option>
-// 				))}
-// 			</select>
-// 		</div>
-// 		<div className='form-group col-12 col-md-4'>
-// 			<label htmlFor='subject_id'>Subject</label>
-// 			<select {...register('subject_id')} name='subject_id' id='subject_id' className='form-control'>
-// 				<option> -- Select -- </option>
-// 				{subjects.map((subject, index) => (
-// 					<option value={subject.id} key={index}>
-// 						{subject.code}
-// 					</option>
-// 				))}
-// 			</select>
-// 		</div>
-// 	</>
-// );

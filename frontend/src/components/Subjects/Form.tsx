@@ -300,7 +300,7 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col-12 col-md-4'>
 							<h4>Year Levels</h4>
 							{['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'].map((year, index) => (
-								<div className='position-relative form-check'>
+								<div className='position-relative form-check' key={index}>
 									<label className='form-check-label'>
 										<input
 											type='checkbox'
