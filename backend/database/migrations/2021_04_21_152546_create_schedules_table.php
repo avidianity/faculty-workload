@@ -21,10 +21,10 @@ class CreateSchedulesTable extends Migration
             $table->id();
             $table->time('start_time');
             $table->time('end_time');
-            $table->foreignIdFor(new Teacher());
-            $table->foreignIdFor(new Subject());
-            $table->foreignIdFor(new Room());
-            $table->foreignIdFor(new Course());
+            $table->foreignIdFor(new Teacher())->constrained();
+            $table->foreignIdFor(new Subject())->constrained();
+            $table->foreignIdFor(new Room())->constrained();
+            $table->foreignIdFor(new Course())->constrained();
             $table->enum('semester', [
                 '1st Semester',
                 '2nd Semester',

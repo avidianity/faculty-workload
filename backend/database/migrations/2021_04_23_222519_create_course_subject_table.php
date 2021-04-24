@@ -17,8 +17,8 @@ class CreateCourseSubjectTable extends Migration
     {
         Schema::create('course_subject', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(new Course());
-            $table->foreignIdFor(new Subject());
+            $table->foreignIdFor(new Course())->constrained();
+            $table->foreignIdFor(new Subject())->constrained();
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();

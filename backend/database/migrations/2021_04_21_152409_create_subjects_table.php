@@ -27,7 +27,7 @@ class CreateSubjectsTable extends Migration
             $table->boolean('semester_1st');
             $table->boolean('semester_2nd');
             $table->boolean('semester_summer');
-            $table->foreignIdFor(new Curriculum());
+            $table->foreignIdFor(new Curriculum())->constrained();
             $table->json('years');
             $table->timestamps();
         });
