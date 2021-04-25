@@ -27,6 +27,7 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'uuid' => ['required', 'uuid'],
             'code' => ['required', 'string', Rule::unique(Room::class)],
         ]);
 
@@ -54,7 +55,7 @@ class RoomController extends Controller
     public function update(Request $request, Room $room)
     {
         $data = $request->validate([
-            'code' => ['required', 'string', Rule::unique(Room::class)->ignoreModel($room)],
+            'code' => ['nullable', 'string', Rule::unique(Room::class)->ignoreModel($room)],
         ]);
 
         $room->update($data);

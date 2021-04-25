@@ -6,6 +6,7 @@ import { handleError, setValues } from '../../helpers';
 import { useMode, useNullable } from '../../hooks';
 import { curriculumService } from '../../services/curriculum.service';
 import Flatpickr from 'react-flatpickr';
+import { CurriculumContract } from '../../contracts/curriculum.contract';
 
 type Props = {};
 
@@ -37,7 +38,7 @@ const Form: FC<Props> = (props) => {
 		years.push(x);
 	}
 
-	const submit = async (payload: Inputs) => {
+	const submit = async (payload: CurriculumContract) => {
 		setProcessing(true);
 		try {
 			payload.start_school_date = startSchoolDate?.toJSON() || '';
@@ -123,6 +124,7 @@ const Form: FC<Props> = (props) => {
 								options={{
 									minDate: dayjs(`January 01, ${startYear}`, 'MMMM DD, YYYY').toDate(),
 									maxDate: dayjs(`December 31, ${endYear}`, 'MMMM DD, YYYY').toDate(),
+									altInput: true,
 								}}
 								value={startSchoolDate || undefined}
 								onChange={(dates) => {
@@ -142,6 +144,7 @@ const Form: FC<Props> = (props) => {
 								options={{
 									minDate: dayjs(`January 01, ${startYear}`, 'MMMM DD, YYYY').toDate(),
 									maxDate: dayjs(`December 31, ${endYear}`, 'MMMM DD, YYYY').toDate(),
+									altInput: true,
 								}}
 								value={endSchoolDate || undefined}
 								onChange={(dates) => {

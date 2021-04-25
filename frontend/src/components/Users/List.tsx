@@ -53,7 +53,7 @@ const List: FC<Props> = (props) => {
 							</Link>
 							{self.id !== user.id ? (
 								<button
-									className='btn btn-danger btn-sm mx-1'
+									className='btn btn-danger btn-sm mx-1 d-none'
 									onClick={(e) => {
 										e.preventDefault();
 										deleteItem(user.id);

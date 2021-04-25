@@ -59,7 +59,7 @@ const List: FC<Props> = (props) => {
 								<i className='fas fa-edit'></i>
 							</Link>
 							<button
-								className='btn btn-danger btn-sm mx-1'
+								className='btn btn-danger btn-sm mx-1 d-none'
 								onClick={(e) => {
 									e.preventDefault();
 									deleteItem(schedule.id);

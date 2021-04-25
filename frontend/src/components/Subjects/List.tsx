@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { FC } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -43,7 +44,7 @@ const List: FC<Props> = (props) => {
 								<i className='fas fa-edit'></i>
 							</Link>
 							<button
-								className='btn btn-danger btn-sm mx-1'
+								className='btn btn-danger btn-sm mx-1 d-none'
 								onClick={(e) => {
 									e.preventDefault();
 									deleteItem(subject.id);
@@ -69,7 +70,10 @@ const List: FC<Props> = (props) => {
 
 						return semesters;
 					})().join(', '),
-					curriculum: `${subject?.curriculum?.start_year} - ${subject?.curriculum?.end_year}`,
+					curriculum: `${subject.curriculum?.start_year} - ${subject?.curriculum?.end_year}`,
+					school_year: `${dayjs(subject.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
+						subject.curriculum?.end_school_date
+					).format('YYYY')}`,
 					courses: subject.courses?.map((course) => course.code).join(', '),
 					years: subject.years.join(', '),
 				})) || []
@@ -114,6 +118,10 @@ const List: FC<Props> = (props) => {
 				{
 					title: 'Curriculum',
 					accessor: 'curriculum',
+				},
+				{
+					title: 'School Year',
+					accessor: 'school_year',
 				},
 				{
 					title: 'Courses',

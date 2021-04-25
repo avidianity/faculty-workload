@@ -28,8 +28,8 @@ class CurriculumController extends Controller
     {
         $data = $request->all();
 
-        $curriculum = Curriculum::whereStartSchoolDate(Carbon::parse($data['start_school_date']))
-            ->whereEndYear(Carbon::parse($data['end_school_date']))
+        $curriculum = Curriculum::whereYear('start_school_date', Carbon::parse($data['start_school_date'])->year)
+            ->whereYear('end_school_date', Carbon::parse($data['end_school_date'])->year)
             ->whereStartYear($data['start_year'])
             ->whereEndYear($data['end_year'])
             ->first();
@@ -63,8 +63,8 @@ class CurriculumController extends Controller
     {
         $data = $request->all();
 
-        $exists = Curriculum::whereStartSchoolDate(Carbon::parse($data['start_school_date']))
-            ->whereEndYear(Carbon::parse($data['end_school_date']))
+        $exists = Curriculum::whereYear('start_school_date', Carbon::parse($data['start_school_date'])->year)
+            ->whereYear('end_school_date', Carbon::parse($data['end_school_date'])->year)
             ->whereStartYear($data['start_year'])
             ->whereEndYear($data['end_year'])
             ->where('id', '!=', $curriculum->id)

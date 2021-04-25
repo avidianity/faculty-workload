@@ -84,6 +84,8 @@ const Form: FC<Props> = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
+	const renderedCurriculums: { start: number; end: number; id: number }[] = [];
+
 	return (
 		<div className='container'>
 			<div className='card'>
@@ -108,24 +110,49 @@ const Form: FC<Props> = (props) => {
 									}
 								}}>
 								<option> -- Select -- </option>
-								{curricula?.map((curriculum, index) => (
-									<option value={curriculum.id} key={index}>
-										{curriculum.start_year} - {curriculum.end_year}
-									</option>
-								))}
+								{curricula?.map((curriculum, index) => {
+									const match = renderedCurriculums.find(
+										(c) => c.start === curriculum.start_year && c.end === curriculum.end_year
+									);
+
+									if (match === undefined) {
+										renderedCurriculums.push({
+											start: curriculum.start_year,
+											end: curriculum.end_year,
+											id: curriculum.id!,
+										});
+									}
+
+									return (
+										<option hidden={match !== undefined} value={curriculum.id} key={index}>
+											{curriculum.start_year} - {curriculum.end_year}
+										</option>
+									);
+								})}
 							</select>
 						</div>
 						<div className='form-group col-12 col-md-6'>
 							<label>School Year</label>
-							<select className='form-control' disabled>
-								{curriculum ? (
-									<option>
-										{dayjs(curriculum.start_school_date).format('MMMM DD, YYYY')} -{' '}
-										{dayjs(curriculum.end_school_date).format('MMMM DD, YYYY')}
-									</option>
-								) : (
-									<option> -- N/A -- </option>
-								)}
+							<select
+								className='form-control'
+								onChange={(e) => {
+									const curriculum = curricula?.find((curriculum) => curriculum.id === e.target.value.toNumber());
+
+									if (curriculum) {
+										setValue('curriculum_id', curriculum.id!);
+										setCurriculum(curriculum);
+									}
+								}}>
+								<option> -- Select -- </option>
+								{curriculum
+									? curricula
+											?.filter((c) => c.start_year === curriculum.start_year && c.end_year === curriculum.end_year)
+											.map((c, index) => (
+												<option value={c.id} key={index} selected={mode === 'Edit' && c.id === curriculum.id}>
+													{dayjs(c.start_school_date).format('YYYY')} - {dayjs(c.end_school_date).format('YYYY')}
+												</option>
+											))
+									: null}
 							</select>
 						</div>
 						<div className='form-group col-12 col-md-6 col-lg-3'>

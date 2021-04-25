@@ -10,7 +10,7 @@ import Table from '../Shared/Table';
 type Props = {};
 
 const List: FC<Props> = (props) => {
-	const { data: items, isFetching: loading, isError, error, refetch } = useQuery('curriculums', () => curriculumService.fetch());
+	const { data: items, isFetching: loading, isError, error, refetch } = useQuery('curricula', () => curriculumService.fetch());
 
 	const url = useURL();
 
@@ -46,7 +46,7 @@ const List: FC<Props> = (props) => {
 								<i className='fas fa-edit'></i>
 							</Link>
 							<button
-								className='btn btn-danger btn-sm mx-1'
+								className='btn btn-danger btn-sm mx-1 d-none'
 								onClick={(e) => {
 									e.preventDefault();
 									deleteItem(curriculum.id);
