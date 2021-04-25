@@ -27,6 +27,12 @@ const Form: FC<Props> = (props) => {
 	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
+			const [year, section] = payload.code.split('-').map((fragment) => fragment.toNumber());
+
+			if (year !== Number(payload.year) || Number(payload.section) !== section) {
+				return toastr.error('Code does not match with year and section.');
+			}
+
 			if (mode === 'Add') {
 				payload.uuid = v4();
 			}

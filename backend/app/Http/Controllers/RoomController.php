@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class RoomController extends Controller
 {
@@ -25,7 +26,11 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        return Room::create($request->all());
+        $data = $request->validate([
+            'code' => ['required', 'string', Rule::unique(Room::class)],
+        ]);
+
+        return Room::create($data);
     }
 
     /**
@@ -48,7 +53,11 @@ class RoomController extends Controller
      */
     public function update(Request $request, Room $room)
     {
-        $room->update($request->all());
+        $data = $request->validate([
+            'code' => ['required', 'string', Rule::unique(Room::class)->ignoreModel($room)],
+        ]);
+
+        $room->update($data);
 
         return $room;
     }

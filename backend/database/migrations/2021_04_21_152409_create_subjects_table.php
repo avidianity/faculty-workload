@@ -22,8 +22,8 @@ class CreateSubjectsTable extends Migration
             $table->string('code');
             $table->string('description');
             $table->unsignedTinyInteger('units');
-            $table->string('lab_hours');
-            $table->string('lec_hours');
+            $table->unsignedSmallInteger('lab_hours');
+            $table->unsignedSmallInteger('lec_hours');
             $table->boolean('semester_1st');
             $table->boolean('semester_2nd');
             $table->boolean('semester_summer');

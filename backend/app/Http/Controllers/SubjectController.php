@@ -95,9 +95,7 @@ class SubjectController extends Controller
         $builder = new Subject();
 
         $fields = [
-            'semester_1st',
-            'semester_2nd',
-            'semester_summer',
+            'code',
             'curriculum_id',
         ];
 

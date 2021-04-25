@@ -6,7 +6,6 @@ import { CurriculumContract } from '../../contracts/curriculum.contract';
 import { handleError, setValues } from '../../helpers';
 import { useArray, useMode, useNullable } from '../../hooks';
 import { subjectService } from '../../services/subject.service';
-import Flatpickr from 'react-flatpickr';
 import { CourseContract } from '../../contracts/course.contract';
 import { SubjectContract } from '../../contracts/subject.contract';
 import { useQuery } from 'react-query';
@@ -34,10 +33,6 @@ const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
 	const { data: curricula } = useQuery('curricula', () => curriculumService.fetch());
 	const { data: coursesList } = useQuery('courses', () => courseService.fetch());
-	const [labHoursStart, setLabHoursStart] = useNullable<Date>();
-	const [labHoursEnd, setLabHoursEnd] = useNullable<Date>();
-	const [lecHoursStart, setLecHoursStart] = useNullable<Date>();
-	const [lecHoursEnd, setLecHoursEnd] = useNullable<Date>();
 	const [curriculum, setCurriculum] = useNullable<CurriculumContract>();
 	const { register, handleSubmit, setValue } = useForm<Inputs>();
 	const [mode, setMode] = useMode();
@@ -57,14 +52,6 @@ const Form: FC<Props> = (props) => {
 			payload.courses = courses;
 			payload.years = years;
 
-			if (labHoursStart && labHoursEnd) {
-				payload.lab_hours = `${dayjs(labHoursStart).toJSON()}|${dayjs(labHoursEnd).toJSON()}`;
-			}
-
-			if (lecHoursStart && lecHoursEnd) {
-				payload.lec_hours = `${dayjs(lecHoursStart).toJSON()}|${dayjs(lecHoursEnd).toJSON()}`;
-			}
-
 			await (mode === 'Add' ? subjectService.create(payload) : subjectService.update(id, payload));
 			toastr.info('Subject saved successfully.', 'Notice');
 		} catch (error) {
@@ -83,12 +70,6 @@ const Form: FC<Props> = (props) => {
 			setYears(subject.years);
 			setCourses(subject.courses!);
 			setCurriculum(subject.curriculum!);
-			const [labHoursStart, labHoursEnd] = subject.lab_hours.split('|').map((date) => dayjs(date).toDate());
-			const [lecHoursStart, lecHoursEnd] = subject.lec_hours.split('|').map((date) => dayjs(date).toDate());
-			setLabHoursStart(labHoursStart);
-			setLabHoursEnd(labHoursEnd);
-			setLecHoursStart(lecHoursStart);
-			setLecHoursEnd(lecHoursEnd);
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -107,7 +88,7 @@ const Form: FC<Props> = (props) => {
 		<div className='container'>
 			<div className='card'>
 				<div className='card-header'>
-					<h4 className='card-title'>{mode} Subject</h4>
+					<h4 className='card-title'>{mode} Subject Offering</h4>
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
@@ -184,78 +165,26 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
-							<label>Lab Hours Start</label>
-							<Flatpickr
-								options={{
-									mode: 'time',
-									altInput: true,
-									altFormat: 'G:i K',
-								}}
-								value={labHoursStart || ''}
+						<div className='form-group col-12 col-md-6 col-lg-6'>
+							<label htmlFor='lab_hours'>Lab Hours</label>
+							<input
+								type='number'
+								{...register('lab_hours')}
+								name='lab_hours'
+								id='lab_hours'
 								className='form-control'
 								disabled={processing}
-								onChange={(dates) => {
-									if (dates.length > 0) {
-										setLabHoursStart(dates[0]);
-									}
-								}}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
-							<label>Lab Hours End</label>
-							<Flatpickr
-								options={{
-									mode: 'time',
-									altInput: true,
-									altFormat: 'G:i K',
-									minTime: labHoursStart || undefined,
-								}}
-								value={labHoursEnd || ''}
+						<div className='form-group col-12 col-md-6 col-lg-6'>
+							<label htmlFor='lec_hours'>Lec Hours</label>
+							<input
+								type='number'
+								{...register('lec_hours')}
+								name='lec_hours'
+								id='lec_hours'
 								className='form-control'
 								disabled={processing}
-								onChange={(dates) => {
-									if (dates.length > 0) {
-										setLabHoursEnd(dates[0]);
-									}
-								}}
-							/>
-						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
-							<label>Lec Hours Start</label>
-							<Flatpickr
-								options={{
-									mode: 'time',
-									altInput: true,
-									altFormat: 'G:i K',
-								}}
-								value={lecHoursStart || ''}
-								className='form-control'
-								disabled={processing}
-								onChange={(dates) => {
-									if (dates.length > 0) {
-										setLecHoursStart(dates[0]);
-									}
-								}}
-							/>
-						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
-							<label>Lec Hours End</label>
-							<Flatpickr
-								options={{
-									mode: 'time',
-									altInput: true,
-									altFormat: 'G:i K',
-									minTime: lecHoursStart || undefined,
-								}}
-								value={lecHoursEnd || ''}
-								className='form-control'
-								disabled={processing}
-								onChange={(dates) => {
-									if (dates.length > 0) {
-										setLecHoursEnd(dates[0]);
-									}
-								}}
 							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>

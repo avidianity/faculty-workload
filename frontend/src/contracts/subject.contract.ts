@@ -8,8 +8,8 @@ export interface SubjectContract extends ModelContract {
 	code: string;
 	description: string;
 	units: number;
-	lab_hours: string;
-	lec_hours: string;
+	lab_hours: number;
+	lec_hours: number;
 	semester_1st: boolean;
 	semester_2nd: boolean;
 	semester_summer: boolean;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Curriculum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class CurriculumController extends Controller
 {
@@ -27,7 +28,9 @@ class CurriculumController extends Controller
     {
         $data = $request->all();
 
-        $curriculum = Curriculum::whereStartYear($data['start_year'])
+        $curriculum = Curriculum::whereStartSchoolDate(Carbon::parse($data['start_school_date']))
+            ->whereEndYear(Carbon::parse($data['end_school_date']))
+            ->whereStartYear($data['start_year'])
             ->whereEndYear($data['end_year'])
             ->first();
 
@@ -58,7 +61,20 @@ class CurriculumController extends Controller
      */
     public function update(Request $request, Curriculum $curriculum)
     {
-        $curriculum->update($request->all());
+        $data = $request->all();
+
+        $exists = Curriculum::whereStartSchoolDate(Carbon::parse($data['start_school_date']))
+            ->whereEndYear(Carbon::parse($data['end_school_date']))
+            ->whereStartYear($data['start_year'])
+            ->whereEndYear($data['end_year'])
+            ->where('id', '!=', $curriculum->id)
+            ->first();
+
+        if ($exists) {
+            return response(['message' => 'Curriculum already exists.'], 400);
+        }
+
+        $curriculum->update($data);
 
         return $curriculum;
     }

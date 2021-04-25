@@ -71,7 +71,18 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
+							<label htmlFor='account_number'>Account Number</label>
+							<input
+								type='text'
+								{...register('account_number')}
+								name='account_number'
+								id='account_number'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='first_name'>First Name</label>
 							<input
 								type='text'
@@ -82,7 +93,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='middle_name'>Middle Name</label>
 							<input
 								type='text'
@@ -93,7 +104,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='last_name'>Last Name</label>
 							<input
 								type='text'

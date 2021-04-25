@@ -335,7 +335,7 @@ const Form: FC<Props> = (props) => {
 									mode: 'time',
 									altInput: true,
 									minTime: selected.teacher ? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate() : undefined,
-									maxDate: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
+									maxTime: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
 								}}
 								value={startTime || undefined}
 								onChange={(dates) => {
@@ -356,8 +356,8 @@ const Form: FC<Props> = (props) => {
 									altFormat: 'G:i K',
 									mode: 'time',
 									altInput: true,
-									minTime: startTime || undefined,
-									maxDate: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
+									minTime: startTime ? dayjs(startTime).add(1, 'hour').toDate() : undefined,
+									maxTime: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
 								}}
 								value={endTime || undefined}
 								onChange={(dates) => {

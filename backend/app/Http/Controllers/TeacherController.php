@@ -27,6 +27,12 @@ class TeacherController extends Controller
     {
         $data = $request->all();
 
+        $teacher = Teacher::whereAccountNumber($data['account_number'])->first();
+
+        if ($teacher) {
+            return response(['message' => 'Account number already exists.'], 400);
+        }
+
         $teacher = Teacher::whereFirstName($data['first_name'])
             ->whereLastName($data['last_name'])
             ->first();

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import React, { FC } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -53,14 +52,6 @@ const List: FC<Props> = (props) => {
 							</button>
 						</div>
 					),
-					lab_hours: subject.lab_hours
-						.split('|')
-						.map((date) => dayjs(date).format('hh:mm A'))
-						.join(' - '),
-					lec_hours: subject.lec_hours
-						.split('|')
-						.map((date) => dayjs(date).format('hh:mm A'))
-						.join(' - '),
 					semesters: (() => {
 						const semesters: string[] = [];
 

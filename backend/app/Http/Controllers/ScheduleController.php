@@ -25,7 +25,13 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        return Schedule::create($request->all());
+        $data = $request->all();
+
+        if (!$this->validateSchedule($data)) {
+            return response(['message' => 'Schedule already exists.']);
+        }
+
+        return Schedule::create($data);
     }
 
     /**
@@ -49,7 +55,13 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $schedule)
     {
-        $schedule->update($request->all());
+        $data = $request->all();
+
+        if (!$this->validateSchedule($data, ['id' => $schedule->id])) {
+            return response(['message' => 'Schedule already exists.']);
+        }
+
+        $schedule->update($data);
 
         $schedule->load('teacher', 'room', 'subject.curriculum', 'course');
 
@@ -67,5 +79,27 @@ class ScheduleController extends Controller
         $schedule->delete();
 
         return response('', 204);
+    }
+
+    protected function validateSchedule($data, $exceptions = [])
+    {
+        $builder = new Schedule();
+
+        $fields = [
+            'teacher_id',
+            'subject_id',
+            'room_id',
+            'course_id',
+        ];
+
+        foreach ($fields as $field) {
+            $builder = $builder->where($field, $data[$field]);
+        }
+
+        foreach ($exceptions as $field => $exception) {
+            $builder = $builder->where($field, '!=', $exception);
+        }
+
+        return $builder->count() === 0;
     }
 }
