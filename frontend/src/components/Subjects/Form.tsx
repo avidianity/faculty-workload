@@ -12,6 +12,7 @@ import { useQuery } from 'react-query';
 import { curriculumService } from '../../services/curriculum.service';
 import { courseService } from '../../services/course.service';
 import dayjs from 'dayjs';
+import { FreeObject } from '../../contracts/misc';
 
 type Props = {};
 
@@ -86,6 +87,16 @@ const Form: FC<Props> = (props) => {
 
 	const renderedCurriculums: { start: number; end: number; id: number }[] = [];
 
+	const yearMap: FreeObject = {
+		'1st Year': 1,
+		'2nd Year': 2,
+		'3rd Year': 3,
+		'4th Year': 4,
+		'5th Year': 5,
+	};
+
+	const selectedYears: number[] = years.map((year) => yearMap[year]);
+
 	return (
 		<div className='container'>
 			<div className='card'>
@@ -145,13 +156,11 @@ const Form: FC<Props> = (props) => {
 								}}>
 								<option> -- Select -- </option>
 								{curriculum
-									? curricula
-											?.filter((c) => c.start_year === curriculum.start_year && c.end_year === curriculum.end_year)
-											.map((c, index) => (
-												<option value={c.id} key={index} selected={mode === 'Edit' && c.id === curriculum.id}>
-													{dayjs(c.start_school_date).format('YYYY')} - {dayjs(c.end_school_date).format('YYYY')}
-												</option>
-											))
+									? curricula?.map((c, index) => (
+											<option value={c.id} key={index} selected={mode === 'Edit' && c.id === curriculum.id}>
+												{dayjs(c.start_school_date).format('YYYY')} - {dayjs(c.end_school_date).format('YYYY')}
+											</option>
+									  ))
 									: null}
 							</select>
 						</div>
@@ -279,27 +288,29 @@ const Form: FC<Props> = (props) => {
 						</div>
 						<div className='form-group col-12 col-md-4'>
 							<h4>Courses</h4>
-							{coursesList?.map((course, index) => (
-								<div className='position-relative form-check' key={index}>
-									<label className='form-check-label'>
-										<input
-											type='checkbox'
-											className='form-check-input'
-											disabled={processing}
-											checked={courses.find((c) => c.id === course.id) !== undefined}
-											onChange={() => {
-												if (courses.find((c) => c.id === course.id) !== undefined) {
-													courses.splice(courses.indexOf(course), 1);
-													setCourses([...courses]);
-												} else {
-													setCourses([...courses, course]);
-												}
-											}}
-										/>{' '}
-										{course.code}
-									</label>
-								</div>
-							))}
+							{coursesList
+								?.filter((course) => selectedYears.includes(course.year))
+								.map((course, index) => (
+									<div className='position-relative form-check' key={index}>
+										<label className='form-check-label'>
+											<input
+												type='checkbox'
+												className='form-check-input'
+												disabled={processing}
+												checked={courses.find((c) => c.id === course.id) !== undefined}
+												onChange={() => {
+													if (courses.find((c) => c.id === course.id) !== undefined) {
+														courses.splice(courses.indexOf(course), 1);
+														setCourses([...courses]);
+													} else {
+														setCourses([...courses, course]);
+													}
+												}}
+											/>{' '}
+											{course.code}
+										</label>
+									</div>
+								))}
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>

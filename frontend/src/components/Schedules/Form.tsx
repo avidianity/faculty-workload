@@ -128,7 +128,9 @@ const Form: FC<Props> = (props) => {
 								<option> -- Select -- </option>
 								{subjects?.map((subject, index) => (
 									<option value={subject.id} key={index}>
-										{subject.description}
+										{subject.description} - {subject.curriculum?.start_year}-{subject.curriculum?.end_year} | S.Y{' '}
+										{dayjs(subject.curriculum?.start_school_date).format('YYYY')}-
+										{dayjs(subject.curriculum?.end_school_date).format('YYYY')}
 									</option>
 								))}
 							</select>
