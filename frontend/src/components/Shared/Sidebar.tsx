@@ -84,7 +84,7 @@ const Sidebar: FC<Props> = (props) => {
 						<li className='d-flex justify-content-center align-items-center mb-3'>
 							<img
 								src={user?.photo_url || '//via.placeholder.com/200'}
-								className='rounded-circle border shadow clickable'
+								className='rounded-circle border shadow clickable profile-picture'
 								alt='Profile'
 								style={{ height: '100px', width: '100px' }}
 								onClick={(e) => {

@@ -5,3 +5,14 @@
 .clickable:hover {
 	cursor: pointer;
 }
+
+.closed-sidebar .profile-picture {
+	height: 50px !important;
+	width: 50px !important;
+}
+
+.closed-sidebar .scrollbar-sidebar:hover .profile-picture {
+	transition: 0.1s linear;
+	height: 100px !important;
+	width: 100px !important;
+}
