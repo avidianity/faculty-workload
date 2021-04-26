@@ -6,13 +6,18 @@
 	cursor: pointer;
 }
 
+.profile-picture {
+	transition: height width;
+	transition-duration: 0.1s;
+	transition-timing-function: ease-in-out;
+}
+
 .closed-sidebar .profile-picture {
 	height: 50px !important;
 	width: 50px !important;
 }
 
 .closed-sidebar .scrollbar-sidebar:hover .profile-picture {
-	transition: 0.1s linear;
 	height: 100px !important;
 	width: 100px !important;
 }
