@@ -13,6 +13,7 @@ type SidebarRoute = {
 	to: string;
 	icon: string;
 	title: string;
+	exact: boolean;
 };
 
 const Sidebar: FC<Props> = (props) => {
@@ -37,39 +38,52 @@ const Sidebar: FC<Props> = (props) => {
 
 	const links: SidebarRoute[] = [
 		{
+			to: '/',
+			icon: 'pe-7s-users',
+			title: 'Dashboard',
+			exact: true,
+		},
+		{
 			to: routes.COURSES,
 			icon: 'pe-7s-rocket',
 			title: 'Academic Programs',
+			exact: false,
 		},
 		{
 			to: routes.CURRICULA,
 			icon: 'pe-7s-light',
 			title: 'Curricula',
+			exact: false,
 		},
 		{
 			to: routes.ROOMS,
 			icon: 'pe-7s-car',
 			title: 'Rooms',
+			exact: false,
 		},
 		{
 			to: routes.SCHEDULES,
 			icon: 'pe-7s-display2',
 			title: 'Schedules',
+			exact: false,
 		},
 		{
 			to: routes.SUBJECTS,
 			icon: 'pe-7s-display2',
 			title: 'Subject Offerings',
+			exact: false,
 		},
 		{
 			to: routes.TEACHERS,
 			icon: 'pe-7s-mouse',
 			title: 'Teachers',
+			exact: false,
 		},
 		{
 			to: routes.USERS,
 			icon: 'pe-7s-eyedropper',
 			title: 'Users',
+			exact: false,
 		},
 	];
 
@@ -103,9 +117,9 @@ const Sidebar: FC<Props> = (props) => {
 								}}
 							/>
 						</li>
-						{links.map(({ to, icon, title }, index) => (
+						{links.map(({ to, icon, title, exact }, index) => (
 							<li key={index}>
-								<NavLink to={url(to)} activeClassName='mm-active'>
+								<NavLink to={url(to)} activeClassName='mm-active' exact={exact}>
 									<i className={`metismenu-icon  ${icon}`}></i>
 									{title}
 								</NavLink>

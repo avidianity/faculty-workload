@@ -137,6 +137,13 @@ const List: FC<Props> = (props) => {
 					<Link to={url(`add`)} className='btn btn-primary btn-sm ml-2'>
 						<i className='fas fa-plus'></i>
 					</Link>
+					<a
+						className='btn btn-info btn-sm mx-2'
+						href={`${process.env.REACT_APP_SERVER_URL}/exports/subject`}
+						target='_blank'
+						rel='noreferrer'>
+						<i className='fas fa-file-export'></i>
+					</a>
 				</>
 			}
 		/>

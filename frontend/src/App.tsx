@@ -17,6 +17,7 @@ function App() {
 
 			script.id = id;
 			script.src = url;
+
 			return script;
 		});
 

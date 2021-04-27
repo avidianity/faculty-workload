@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Asker, outIf } from '../../helpers';
 import { History } from 'history';
 import { routes } from '../../routes';
 import { State } from '../../libraries/State';
+import { NavbarBus } from '../../events';
 
 type Props = {
 	toggleSidebar: () => void;
@@ -12,6 +13,8 @@ type Props = {
 };
 
 const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
+	const [showSearch, setShowSearch] = useState(false);
+	const [search, setSearch] = useState('');
 	const state = State.getInstance();
 
 	const logout = async () => {
@@ -22,6 +25,15 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 			history.push(routes.LOGIN);
 		}
 	};
+
+	useEffect(() => {
+		const key = NavbarBus.listen<boolean>('toggle-search', (toggle) => setShowSearch(toggle));
+
+		return () => {
+			NavbarBus.unlisten(key);
+		};
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<div className='app-header header-shadow'>
@@ -62,16 +74,29 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 				</span>
 			</div>
 			<div className='app-header__content'>
-				<div className='app-header-left d-none'>
-					<div className='search-wrapper'>
-						<div className='input-holder'>
-							<input type='text' className='search-input' placeholder='Type to search' />
-							<button className='search-icon'>
-								<span></span>
-							</button>
+				<div className={`app-header-left ${outIf(!showSearch, 'd-none')}`}>
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							NavbarBus.dispatch('search', search);
+							setSearch('');
+						}}>
+						<div className='search-wrapper'>
+							<div className='input-holder'>
+								<input
+									type='text'
+									className='search-input'
+									placeholder='Type to search'
+									value={search}
+									onChange={(e) => setSearch(e.target.value)}
+								/>
+								<button type='submit' className='search-icon'>
+									<span></span>
+								</button>
+							</div>
+							<button className='close'></button>
 						</div>
-						<button className='close'></button>
-					</div>
+					</form>
 				</div>
 				<div className='app-header-right'>
 					<div className='header-btn-lg pr-0'>

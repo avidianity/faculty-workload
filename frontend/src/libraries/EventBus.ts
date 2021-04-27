@@ -21,13 +21,12 @@ export class EventBus {
 
 	unlisten(key: Key) {
 		const name = key.getName();
-		const id = key.getID();
 
 		if (!(name in this.observers)) {
 			return;
 		}
 
-		const index = this.observers[name].findIndex((observer) => observer.getKey().getID() === id);
+		const index = this.observers[name].findIndex((observer) => observer.getKey().getID() === key.getID());
 
 		if (index >= 0) {
 			this.observers[name].splice(index, 1);

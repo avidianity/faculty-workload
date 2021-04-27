@@ -3,6 +3,7 @@ import { Route, RouteProps, Switch, useHistory } from 'react-router';
 import { outIf } from '../helpers';
 import { useURL } from '../hooks';
 import { routes } from '../routes';
+import Analytics from './Analytics';
 import Courses from './Courses';
 import Curricula from './Curricula';
 import Rooms from './Rooms';
@@ -22,6 +23,11 @@ const Dashboard: FC<Props> = (props) => {
 	const url = useURL();
 
 	const localRoutes: RouteProps[] = [
+		{
+			path: url('/'),
+			component: Analytics,
+			exact: true,
+		},
 		{
 			path: url(routes.USERS),
 			component: Users,
