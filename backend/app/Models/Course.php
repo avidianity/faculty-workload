@@ -17,6 +17,11 @@ class Course extends Model
         'section',
     ];
 
+    protected $casts = [
+        'year' => 'integer',
+        'section' => 'integer',
+    ];
+
     public function subjects()
     {
         return $this->belongsToMany(Subject::class)->withTimestamps();

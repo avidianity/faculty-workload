@@ -92,4 +92,15 @@ class TeacherController extends Controller
 
         return response('', 204);
     }
+
+    public function search(Request $request)
+    {
+        return Teacher::search($request->input('query'))
+            ->with([
+                'schedules.subject.curriculum',
+                'schedules.room',
+                'schedules.course',
+                'schedules.days',
+            ])->get();
+    }
 }

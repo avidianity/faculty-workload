@@ -20,6 +20,8 @@ class Teacher extends Model
         'availability_end',
     ];
 
+    protected $searchable = ['account_number', 'first_name', 'last_name', 'middle_name', 'email'];
+
     protected static function booted()
     {
         static::deleting(function (self $teacher) {
@@ -30,5 +32,21 @@ class Teacher extends Model
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function getSearchable()
+    {
+        return $this->searchable;
+    }
+
+    public static function search($keyword)
+    {
+        $builder = new static();
+
+        foreach ($builder->getSearchable() as $key) {
+            $builder = $builder->orWhere($key, 'LIKE', "%{$keyword}%");
+        }
+
+        return $builder;
     }
 }

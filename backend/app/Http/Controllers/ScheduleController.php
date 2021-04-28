@@ -14,7 +14,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return Schedule::with('teacher', 'room', 'subject.curriculum', 'course')->get();
+        return Schedule::with('teacher', 'room', 'subject.curriculum', 'course', 'days')->get();
     }
 
     /**
@@ -31,7 +31,11 @@ class ScheduleController extends Controller
             return response(['message' => 'Schedule already exists.']);
         }
 
-        return Schedule::create($data);
+        $schedule = Schedule::create($data);
+
+        $schedule->days()->createMany($data['days']);
+
+        return $schedule;
     }
 
     /**
@@ -42,7 +46,7 @@ class ScheduleController extends Controller
      */
     public function show(Schedule $schedule)
     {
-        $schedule->load('teacher', 'room', 'subject.curriculum', 'course');
+        $schedule->load('teacher', 'room', 'subject.curriculum', 'course', 'days');
         return $schedule;
     }
 
@@ -63,7 +67,11 @@ class ScheduleController extends Controller
 
         $schedule->update($data);
 
-        $schedule->load('teacher', 'room', 'subject.curriculum', 'course');
+        $schedule->days()->delete();
+
+        $schedule->days()->createMany($data['days']);
+
+        $schedule->load('teacher', 'room', 'subject.curriculum', 'course', 'days');
 
         return $schedule;
     }

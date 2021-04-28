@@ -17,16 +17,16 @@ import { CourseContract } from '../../contracts/course.contract';
 
 type Props = {};
 
+type Day = { day: string; start_time: string; end_time: string; checked: boolean };
+
 type Inputs = {
-	start_time: string;
-	end_time: string;
 	teacher_id: number;
 	subject_id: number;
 	room_id: number;
 	course_id: number;
 	semester: string;
 	slot: number;
-	days: string[];
+	days: Day[];
 };
 
 type Selected = {
@@ -41,11 +41,40 @@ const Form: FC<Props> = (props) => {
 	const { data: subjects } = useQuery('subjects', () => subjectService.fetch());
 	const { data: teachers } = useQuery('teachers', () => teacherService.fetch());
 	const { data: courses } = useQuery('courses', () => courseService.fetch());
-	const [days, setDays] = useArray<string>();
+	const [days, setDays] = useArray<Day>([
+		{
+			day: 'Monday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
+		{
+			day: 'Tuesday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
+		{
+			day: 'Wednesday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
+		{
+			day: 'Thursday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
+		{
+			day: 'Friday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
+	]);
 	const [selected, setSelected] = useState<Selected>({});
 	const { register, handleSubmit, setValue } = useForm<Inputs>();
-	const [startTime, setStartTime] = useNullable<Date>();
-	const [endTime, setEndTime] = useNullable<Date>();
 	const [mode, setMode] = useMode();
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
@@ -54,15 +83,7 @@ const Form: FC<Props> = (props) => {
 	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
-			if (startTime) {
-				payload.start_time = dayjs(startTime).format('HH:mm:ss');
-			}
-
-			if (endTime) {
-				payload.end_time = dayjs(endTime).format('HH:mm:ss');
-			}
-
-			payload.days = days;
+			payload.days = days.filter((day) => day.checked);
 
 			await (mode === 'Add' ? scheduleService.create(payload) : scheduleService.update(id, payload));
 			toastr.info('Schedule saved successfully.', 'Notice');
@@ -79,12 +100,22 @@ const Form: FC<Props> = (props) => {
 			setID(schedule.id!);
 
 			setValues(schedule, setValue);
-			setStartTime(dayjs(schedule.start_time, 'HH:mm:ss').toDate());
-			setEndTime(dayjs(schedule.end_time, 'HH:mm:ss').toDate());
 			setSelected({
 				...schedule,
 			});
-			setDays(schedule.days);
+
+			setDays([
+				...days.map((day) => {
+					const scheduleDay = schedule.days.find((scheduleDay) => scheduleDay.day === day.day);
+					if (scheduleDay !== undefined) {
+						day.checked = true;
+						day.start_time = scheduleDay.start_time;
+						day.end_time = scheduleDay.end_time;
+					}
+					return day;
+				}),
+			]);
+
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -100,7 +131,7 @@ const Form: FC<Props> = (props) => {
 	}, []);
 
 	return (
-		<div className='container'>
+		<div className='container pb-5'>
 			<div className='card'>
 				<div className='card-header'>
 					<h4 className='card-title'>{mode} Schedule</h4>
@@ -283,7 +314,7 @@ const Form: FC<Props> = (props) => {
 								value={selected.teacher ? selected.teacher.employment_status : ''}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='room_id'>Room</label>
 							<select {...register('room_id')} name='room_id' id='room_id' className='form-control' disabled={processing}>
 								<option> -- Select -- </option>
@@ -294,7 +325,7 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='slot'>Slot</label>
 							<input
 								{...register('slot')}
@@ -305,73 +336,130 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12'>
 							<label>Days</label>
-							{['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, index) => (
-								<div className='position-relative form-check' key={index}>
-									<label className='form-check-label'>
-										<input
-											type='checkbox'
-											className='form-check-input'
-											checked={days.includes(day)}
-											onChange={(e) => {
-												if (days.includes(day)) {
-													days.splice(days.indexOf(day), 1);
-													setDays([...days]);
-												} else {
-													setDays([...days, day]);
-												}
-											}}
-											disabled={processing}
-										/>{' '}
-										{day}
-									</label>
+							<div className='container-fluid'>
+								<div className='table-responsive'>
+									<table className='table'>
+										<thead>
+											<tr>
+												<th>Day</th>
+												<th>Start Time</th>
+												<th>End Time</th>
+											</tr>
+										</thead>
+										<tbody>
+											{days.map((day, index) => (
+												<tr key={index}>
+													<td>
+														<div className='position-relative form-check'>
+															<label
+																className={`form-check-label ${outIf(
+																	selected.teacher === undefined,
+																	'text-muted'
+																)}`}>
+																<input
+																	type='checkbox'
+																	className='form-check-input'
+																	checked={day.checked}
+																	onChange={(e) => {
+																		day.checked = !day.checked;
+
+																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	}}
+																	disabled={processing || selected.teacher === undefined}
+																/>{' '}
+																{day.day}
+															</label>
+														</div>
+													</td>
+													<td>
+														<input
+															type='text'
+															disabled
+															className={`form-control ${outIf(day.checked, 'd-none')}`}
+														/>
+														{day.checked ? (
+															<Flatpickr
+																options={{
+																	altFormat: 'G:i K',
+																	mode: 'time',
+																	altInput: true,
+																	defaultDate: selected.teacher
+																		? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate()
+																		: undefined,
+																	minTime: selected.teacher
+																		? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate()
+																		: undefined,
+																	maxTime:
+																		day.end_time.length > 0
+																			? dayjs(day.end_time, 'HH:mm:ss').toDate()
+																			: undefined,
+																}}
+																value={
+																	day.start_time.length > 0
+																		? dayjs(day.start_time, 'HH:mm:ss').toDate()
+																		: undefined
+																}
+																onChange={(dates) => {
+																	if (dates.length > 0) {
+																		day.start_time = dayjs(dates[0]).format('HH:mm:ss');
+																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	}
+																}}
+																className={`form-control`}
+																disabled={processing}
+															/>
+														) : null}
+													</td>
+													<td>
+														<input
+															type='text'
+															disabled
+															className={`form-control ${outIf(day.checked, 'd-none')}`}
+														/>
+														{day.checked ? (
+															<Flatpickr
+																options={{
+																	altFormat: 'G:i K',
+																	mode: 'time',
+																	altInput: true,
+																	defaultDate: selected.teacher
+																		? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate()
+																		: undefined,
+																	minTime:
+																		day.start_time.length > 0
+																			? dayjs(day.start_time, 'HH:mm:ss').toDate()
+																			: undefined,
+																	maxTime: selected.teacher
+																		? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate()
+																		: undefined,
+																}}
+																value={
+																	day.end_time.length > 0
+																		? dayjs(day.end_time, 'HH:mm:ss').toDate()
+																		: undefined
+																}
+																onChange={(dates) => {
+																	if (dates.length > 0) {
+																		day.end_time = dayjs(dates[0]).format('HH:mm:ss');
+																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	}
+																}}
+																className={`form-control`}
+																disabled={processing}
+															/>
+														) : null}
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
 								</div>
-							))}
-						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='start_time'>Start Time</label>
-							<Flatpickr
-								options={{
-									altFormat: 'G:i K',
-									mode: 'time',
-									altInput: true,
-									minTime: selected.teacher ? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate() : undefined,
-									maxTime: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
-								}}
-								value={startTime || undefined}
-								onChange={(dates) => {
-									if (dates.length > 0) {
-										setStartTime(dates[0]);
-									}
-								}}
-								name='start_time'
-								id='start_time'
-								className='form-control'
-								disabled={processing}
-							/>
-						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='end_time'>End Time</label>
-							<Flatpickr
-								options={{
-									altFormat: 'G:i K',
-									mode: 'time',
-									altInput: true,
-									minTime: startTime ? dayjs(startTime).add(1, 'hour').toDate() : undefined,
-									maxTime: selected.teacher ? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate() : undefined,
-								}}
-								value={endTime || undefined}
-								onChange={(dates) => {
-									if (dates.length > 0) {
-										setEndTime(dates[0]);
-									}
-								}}
-								name='end_time'
-								id='end_time'
-								className='form-control'
-								disabled={processing}
-							/>
+							</div>
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>
@@ -379,6 +467,9 @@ const Form: FC<Props> = (props) => {
 							</button>
 						</div>
 					</form>
+				</div>
+				<div className='card-footer'>
+					<p>Manual Here</p>
 				</div>
 			</div>
 		</div>

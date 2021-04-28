@@ -78,8 +78,10 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
-							NavbarBus.dispatch('search', search);
-							setSearch('');
+							if (search.length >= 3) {
+								NavbarBus.dispatch('search', search);
+								setSearch('');
+							}
 						}}>
 						<div className='search-wrapper'>
 							<div className='input-holder'>

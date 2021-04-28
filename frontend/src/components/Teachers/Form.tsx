@@ -2,7 +2,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
 import { EmploymentStatuses } from '../../constants';
-import { TeacherContract } from '../../contracts/teacher.contract';
 import { handleError, setValues } from '../../helpers';
 import { useMode, useNullable } from '../../hooks';
 import { teacherService } from '../../services/teacher.service';
@@ -11,9 +10,20 @@ import dayjs from 'dayjs';
 
 type Props = {};
 
+type Inputs = {
+	account_number: string;
+	first_name: string;
+	middle_name: string;
+	last_name: string;
+	email: string;
+	employment_status: string;
+	availability_start: string;
+	availability_end: string;
+};
+
 const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
-	const { register, handleSubmit, setValue } = useForm<TeacherContract>();
+	const { register, handleSubmit, setValue } = useForm<Inputs>();
 	const [availabilityStart, setAvailabilityStart] = useNullable<Date>();
 	const [availabilityEnd, setAvailabilityEnd] = useNullable<Date>();
 	const [mode, setMode] = useMode();
@@ -21,7 +31,7 @@ const Form: FC<Props> = (props) => {
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
 
-	const submit = async (payload: TeacherContract) => {
+	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
 			if (availabilityStart) {
@@ -192,6 +202,9 @@ const Form: FC<Props> = (props) => {
 							</button>
 						</div>
 					</form>
+				</div>
+				<div className='card-footer'>
+					<p>Manual Here</p>
 				</div>
 			</div>
 		</div>

@@ -38,7 +38,7 @@ const List: FC<Props> = (props) => {
 			items={
 				items?.map((schedule) => ({
 					...schedule,
-					teacher: `${schedule.teacher?.last_name}, ${schedule.teacher?.first_name} ${schedule.teacher?.middle_name}`,
+					teacher: `${schedule.teacher?.last_name}, ${schedule.teacher?.first_name} ${schedule.teacher?.middle_name || ''}`,
 					employment_status: `${schedule.teacher?.employment_status}`,
 					subject: schedule.subject?.code,
 					room: schedule.room?.code,
@@ -46,13 +46,11 @@ const List: FC<Props> = (props) => {
 					course_description: schedule.course?.description,
 					year_level: schedule.course?.year,
 					section: schedule.course?.section,
-					start_time: dayjs(schedule.start_time, 'HH:mm:ss').format('hh:mm A'),
-					end_time: dayjs(schedule.end_time, 'HH:mm:ss').format('hh:mm A'),
 					curriculum_year: `${schedule.subject?.curriculum?.start_year} - ${schedule.subject?.curriculum?.end_year}`,
 					school_year: `${dayjs(schedule.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
 						schedule.subject?.curriculum?.end_school_date
 					).format('YYYY')}`,
-					days: schedule.days.join(', '),
+					days: schedule.days.map((day) => day.day).join(', '),
 					actions: (
 						<div className='d-flex'>
 							<Link to={url(`${schedule.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
@@ -126,14 +124,6 @@ const List: FC<Props> = (props) => {
 				{
 					title: 'Days',
 					accessor: 'days',
-				},
-				{
-					title: 'Start Time',
-					accessor: 'start_time',
-				},
-				{
-					title: 'End Time',
-					accessor: 'end_time',
 				},
 				{
 					title: 'Actions',

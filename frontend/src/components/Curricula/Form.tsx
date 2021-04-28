@@ -165,6 +165,9 @@ const Form: FC<Props> = (props) => {
 						</div>
 					</form>
 				</div>
+				<div className='card-footer'>
+					<p>Manual Here</p>
+				</div>
 			</div>
 		</div>
 	);

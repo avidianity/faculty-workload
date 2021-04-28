@@ -38,7 +38,7 @@ const List: FC<Props> = (props) => {
 			items={
 				items?.map((teacher) => ({
 					...teacher,
-					name: `${teacher.last_name}, ${teacher.first_name} ${teacher.middle_name}`,
+					name: `${teacher.last_name}, ${teacher.first_name} ${teacher.middle_name || ''}`,
 					availability: `${dayjs(teacher.availability_start, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
 						teacher.availability_end,
 						'HH:mm:ss'

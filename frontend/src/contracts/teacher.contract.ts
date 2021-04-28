@@ -1,4 +1,5 @@
 import { ModelContract } from './model.contract';
+import { ScheduleContract } from './schedule.contract';
 
 export interface TeacherContract extends ModelContract {
 	account_number: string;
@@ -9,4 +10,5 @@ export interface TeacherContract extends ModelContract {
 	employment_status: string;
 	availability_start: string;
 	availability_end: string;
+	schedules?: ScheduleContract[];
 }

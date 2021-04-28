@@ -21,7 +21,6 @@ class CreateCourseSubjectTable extends Migration
             $table->foreignIdFor(new Subject())->constrained();
             $table->timestamps();
         });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

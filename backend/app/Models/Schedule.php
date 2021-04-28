@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\JSON;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,19 +10,12 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'start_time',
-        'end_time',
         'teacher_id',
         'subject_id',
         'room_id',
         'course_id',
         'semester',
         'slot',
-        'days',
-    ];
-
-    protected $casts = [
-        'days' => JSON::class,
     ];
 
     public function teacher()
@@ -44,5 +36,10 @@ class Schedule extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function days()
+    {
+        return $this->hasMany(ScheduleDay::class);
     }
 }

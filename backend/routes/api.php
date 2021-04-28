@@ -27,6 +27,8 @@ Route::prefix('/auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/teachers/search', [TeacherController::class, 'search']);
+
     Route::apiResources([
         'courses' => CourseController::class,
         'curricula' => CurriculumController::class,

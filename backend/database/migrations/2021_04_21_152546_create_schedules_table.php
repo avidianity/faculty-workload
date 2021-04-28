@@ -19,8 +19,6 @@ class CreateSchedulesTable extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->time('start_time');
-            $table->time('end_time');
             $table->foreignIdFor(new Teacher())->constrained();
             $table->foreignIdFor(new Subject())->constrained();
             $table->foreignIdFor(new Room())->constrained();
@@ -31,7 +29,6 @@ class CreateSchedulesTable extends Migration
                 'Summer',
             ]);
             $table->unsignedTinyInteger('slot');
-            $table->json('days');
             $table->timestamps();
         });
     }
