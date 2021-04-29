@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->text('photo_url')->default('//via.placeholder.com/200');
+            $table->text('photo_url')->default('https://via.placeholder.com/200');
             $table->string('name');
             $table->string('email')->unique();
             $table->boolean('confirmed');

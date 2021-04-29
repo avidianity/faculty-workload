@@ -8,6 +8,7 @@ import { UserContract } from '../contracts/user.contract';
 import { handleError } from '../helpers';
 import { State } from '../libraries/State';
 import { routes } from '../routes';
+import logo from '../assets/images/logo.svg';
 
 type Props = {};
 
@@ -46,7 +47,7 @@ const Login: FC<Props> = (props) => {
 		<>
 			<nav className='navbar navbar-expand-lg navbar-light bg-white shadow py-3 px-5'>
 				<Link className='navbar-brand' to={routes.LOGIN}>
-					<img src='/assets/images/logo.svg' alt='PUP Bansud' style={{ height: '40px', width: '40px' }} />
+					<img src={logo} alt='PUP Bansud' style={{ height: '40px', width: '40px' }} />
 				</Link>
 				<button className='navbar-toggler' type='button' data-toggle='collapse' data-target={`#${id}`}>
 					<span className='navbar-toggler-icon'></span>
@@ -91,7 +92,7 @@ const Login: FC<Props> = (props) => {
 					<div className='card border-0 shadow-none mx-auto' style={{ maxWidth: '400px' }}>
 						<div className='card-body'>
 							<div className='d-flex justify-content-center'>
-								<img src='/assets/images/logo.svg' alt='PUP Bansud' style={{ height: '100px', width: '100px' }} />
+								<img src={logo} alt='PUP Bansud' style={{ height: '100px', width: '100px' }} />
 							</div>
 							<form onSubmit={handleSubmit(submit)} className='mt-4'>
 								<div className='form-group'>

@@ -6,6 +6,10 @@
 	cursor: pointer;
 }
 
+.logo-src {
+	background: url(../assets/images/logo.svg);
+}
+
 .profile-picture {
 	transition: height width;
 	transition-duration: 0.2s;
@@ -43,4 +47,10 @@
 	position: absolute;
 	bottom: 0;
 	width: 100%;
+}
+
+@media (max-height: 576px) {
+	.footer {
+		position: relative;
+	}
 }

@@ -9012,7 +9012,6 @@ button,
 .app-header__logo .logo-src {
 	height: 40px;
 	width: 40px;
-	background: url(assets/images/logo.svg);
 	background-size: cover;
 	background-repeat: no-repeat;
 }
