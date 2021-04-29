@@ -8,4 +8,5 @@ export interface UserContract extends ModelContract {
 	confirmed: boolean;
 	password: string;
 	hint: string;
+	role: string;
 }

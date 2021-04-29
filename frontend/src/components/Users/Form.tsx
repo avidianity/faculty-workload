@@ -71,7 +71,14 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='role'>Role</label>
+							<select {...register('role')} name='role' id='role' className='form-control'>
+								<option value='Admin'>Admin</option>
+								<option value='Staff'>Staff</option>
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='password'>Password</label>
 							<input
 								type='password'
@@ -82,7 +89,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='hint'>Hint</label>
 							<input type='text' {...register('hint')} name='hint' id='hint' className='form-control' disabled={processing} />
 						</div>

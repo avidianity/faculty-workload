@@ -68,6 +68,12 @@ const Dashboard: FC<Props> = (props) => {
 			<div className='app-main h-100'>
 				<Sidebar />
 				<div className='app-main__outer'>
+					<div className='dashboard-hero d-flex align-items-center justify-content-center flex-column px-4'>
+						<h1 className='text-white text-center'>Polytechnic University of the Philippines</h1>
+						<p className='text-center' style={{ color: '#ff8e00' }}>
+							The Country's 1st Polytechnic University
+						</p>
+					</div>
 					<div className='app-main__inner'>
 						<Switch>
 							{localRoutes.map((route, index) => (
