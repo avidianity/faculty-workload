@@ -24,13 +24,34 @@ const Form: FC<Props> = (props) => {
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
 
+	const formats = [/[A-Z]{4} \d-\d/g, /[A-Z]{4}-[A-Z]{4} \d-\d/g];
+
 	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
-			const [year, section] = payload.code.split('-').map((fragment) => fragment.toNumber());
+			let passes = false;
+			for (const format of formats) {
+				if (format.test(payload.code)) {
+					passes = true;
+				}
+			}
 
-			if (year !== Number(payload.year) || Number(payload.section) !== section) {
-				return toastr.error('Code does not match with year and section.');
+			if (!passes) {
+				return toastr.error('Code does not match correct format.');
+			}
+
+			if (payload.code.length === 8) {
+				const [year, section] = payload.code.split('-').map((fragment) => fragment.toNumber());
+
+				if (year !== Number(payload.year) || Number(payload.section) !== section) {
+					return toastr.error('Code does not match with year and section.');
+				}
+			} else {
+				const [, year, section] = payload.code.split('-').map((fragment) => fragment.toNumber());
+
+				if (year !== Number(payload.year) || Number(payload.section) !== section) {
+					return toastr.error('Code does not match with year and section.');
+				}
 			}
 
 			if (mode === 'Add') {
@@ -80,7 +101,6 @@ const Form: FC<Props> = (props) => {
 								type='text'
 								{...register('code', {
 									required: true,
-									pattern: /[A-Z]{4} \d-\d/g,
 								})}
 								name='code'
 								id='code'
@@ -88,7 +108,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 							<small className='form-text text-muted'>
-								Ex.: <b>BSIT 4-1</b>
+								Ex.: <b>BSIT 4-1, BSIT-MATH 4-1</b>
 							</small>
 						</div>
 						<div className='form-group col-12 col-md-6'>

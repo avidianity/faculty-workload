@@ -7,4 +7,5 @@ export interface UserContract extends ModelContract {
 	blocked: boolean;
 	confirmed: boolean;
 	password: string;
+	hint: string;
 }

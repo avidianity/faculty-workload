@@ -86,7 +86,7 @@ const Login: FC<Props> = (props) => {
 					</ul>
 				</div>
 			</nav>
-			<div className='container d-flex align-items-center justify-content-center padding-lg-50px'>
+			<div className='container d-flex align-items-center justify-content-center padding-lg-50px' style={{ marginBottom: '50px' }}>
 				<div className='login-container d-flex align-items-center rounded shadow'>
 					<div className='card border-0 shadow-none mx-auto' style={{ maxWidth: '400px' }}>
 						<div className='card-body'>
@@ -128,6 +128,50 @@ const Login: FC<Props> = (props) => {
 					</div>
 				</div>
 			</div>
+			<footer className='footer' style={{ backgroundColor: '#2b2b2b', padding: '50px 20px' }}>
+				<div className='container'>
+					<div className='row'>
+						<div className='col-12 col-md-6 col-lg-3'>
+							<p style={{ color: 'hsla(0,0%,100%,.30196078431372547)' }}>SERVICES</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>PUP WebMail</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>PUP iApply</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>SIS for Students</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>SIS for Faculty</p>
+						</div>
+						<div className='col-12 col-md-6 col-lg-3'>
+							<p style={{ color: 'hsla(0,0%,100%,.30196078431372547)' }}>Quick Links</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>About Us</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Terms and Policies</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Terms of Use</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Privacy Statement</p>
+						</div>
+						<div className='col-12 col-md-6 col-lg-3'>
+							<p style={{ color: 'hsla(0,0%,100%,.30196078431372547)' }}>Quick Links</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Admission Information</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Branches and Campuses</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Academic Programs</p>
+							<p style={{ cursor: 'pointer', color: '#fff' }}>Jobs for PUPlans</p>
+						</div>
+						<div className='col-12 col-md-6 col-lg-3 d-flex justify-content-center' style={{ flexDirection: 'column' }}>
+							<div className='d-flex'>
+								<button className='mr-1 ml-auto btn btn-secondary btn-sm d-flex align-items-center justify-content-center rounded-circle p-1'>
+									<i className='fab fa-facebook fa-2x'></i>
+								</button>
+								<button className='mx-1 btn btn-secondary btn-sm d-flex align-items-center justify-content-center rounded-circle p-1'>
+									<i className='fab fa-twitter fa-2x'></i>
+								</button>
+								<button className='mx-1 btn btn-secondary btn-sm d-flex align-items-center justify-content-center rounded-circle p-1'>
+									<i className='fab fa-linkedin fa-2x'></i>
+								</button>
+								<button className='ml-1 mr-auto btn btn-secondary btn-sm d-flex align-items-center justify-content-center rounded-circle p-1'>
+									<i className='fab fa-instagram fa-2x'></i>
+								</button>
+							</div>
+							<p className='text-white text-center'>©1998-2021 Polytechnic University of the Philippines.</p>
+						</div>
+					</div>
+				</div>
+			</footer>
 		</>
 	);
 };

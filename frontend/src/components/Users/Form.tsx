@@ -82,6 +82,10 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
+						<div className='form-group col-12 col-md-6'>
+							<label htmlFor='hint'>Hint</label>
+							<input type='text' {...register('hint')} name='hint' id='hint' className='form-control' disabled={processing} />
+						</div>
 						<div className='form-group col-12'>
 							<div className='position-relative form-check'>
 								<label className='form-check-label'>

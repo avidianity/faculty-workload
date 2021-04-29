@@ -22,16 +22,18 @@ class AuthController extends Controller
             return response(['message' => 'Email does not exist.'], 403);
         }
 
+        $hint = $user->hint;
+
         if (!Hash::check($data['password'], $user->password)) {
-            return response(['message' => 'Incorrect password.'], 403);
+            return response(['message' => 'Incorrect password.' . ' Hint: ' . $hint], 403);
         }
 
         if (!$user->confirmed) {
-            return response(['message' => 'Account is not yet confirmed.'], 403);
+            return response(['message' => 'Account is not yet confirmed.' . ' Hint: ' . $hint], 403);
         }
 
         if ($user->blocked) {
-            return response(['message' => 'Account is currently blocked.'], 403);
+            return response(['message' => 'Account is currently blocked.' . ' Hint: ' . $hint], 403);
         }
 
         $token = $user->createToken(Str::random(10));

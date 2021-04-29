@@ -213,11 +213,15 @@ const Form: FC<Props> = (props) => {
 								}}
 								disabled={processing}>
 								<option> -- Select -- </option>
-								{courses?.map((course, index) => (
-									<option value={course.id} key={index}>
-										{course.code}
-									</option>
-								))}
+								{courses
+									?.filter((course) => {
+										return selected.subject?.courses?.find((c) => c.id === course.id) !== undefined;
+									})
+									.map((course, index) => (
+										<option value={course.id} key={index}>
+											{course.code}
+										</option>
+									))}
 							</select>
 						</div>
 						<div className='form-group col-12 col-md-3'>
@@ -443,9 +447,16 @@ const Form: FC<Props> = (props) => {
 																		: undefined
 																}
 																onChange={(dates) => {
-																	if (dates.length > 0) {
+																	if (
+																		dates.length > 0 &&
+																		dayjs(dates[0]).diff(dayjs(day.start_time, 'HH:mm:ss'), 'hours') <=
+																			6
+																	) {
+																		console.log('valid');
 																		day.end_time = dayjs(dates[0]).format('HH:mm:ss');
 																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	} else {
 																		setDays([...days]);
 																	}
 																}}
