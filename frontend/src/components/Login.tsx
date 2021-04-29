@@ -87,7 +87,7 @@ const Login: FC<Props> = (props) => {
 					</ul>
 				</div>
 			</nav>
-			<div className='container d-flex align-items-center justify-content-center padding-lg-50px' style={{ marginBottom: '50px' }}>
+			<div className='container d-flex align-items-center justify-content-center padding-lg-50px' style={{ marginBottom: '100px' }}>
 				<div className='login-container d-flex align-items-center rounded shadow'>
 					<div className='card border-0 shadow-none mx-auto' style={{ maxWidth: '400px' }}>
 						<div className='card-body'>

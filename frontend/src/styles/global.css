@@ -48,9 +48,3 @@
 	bottom: 0;
 	width: 100%;
 }
-
-@media (max-height: 576px) {
-	.footer {
-		position: absolute;
-	}
-}
