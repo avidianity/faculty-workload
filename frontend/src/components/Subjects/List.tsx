@@ -104,6 +104,10 @@ const List: FC<Props> = (props) => {
 					accessor: 'year',
 				},
 				{
+					title: 'Section',
+					accessor: 'section',
+				},
+				{
 					title: 'Curriculum',
 					accessor: 'curriculum',
 				},

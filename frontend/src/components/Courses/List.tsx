@@ -74,14 +74,6 @@ const List: FC<Props> = (props) => {
 					accessor: 'description',
 				},
 				{
-					title: 'Year Level',
-					accessor: 'year',
-				},
-				{
-					title: 'Section',
-					accessor: 'section',
-				},
-				{
 					title: 'Actions',
 					accessor: 'actions',
 				},

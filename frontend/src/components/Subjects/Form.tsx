@@ -23,7 +23,9 @@ type Inputs = {
 	lec_hours: string;
 	semester: string;
 	curriculum_id: number;
+	section: string;
 	year: string;
+	course_id: number;
 };
 
 const Form: FC<Props> = (props) => {
@@ -86,7 +88,7 @@ const Form: FC<Props> = (props) => {
 							<select {...register('curriculum_id')} name='curriculum_id' id='curriculum_id' className='form-control'>
 								<option> -- Select -- </option>
 								{curricula?.map((curriculum, index) => (
-									<option hidden={match !== undefined} value={curriculum.id} key={index}>
+									<option value={curriculum.id} key={index}>
 										{curriculum.description} | {dayjs(curriculum.start_school_date).format('MMMM DD, YYYY')} -{' '}
 										{dayjs(curriculum.end_school_date).format('MMMM DD, YYYY')}
 									</option>
@@ -152,7 +154,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='semester'>Semester</label>
 							<select {...register('semester')} name='semester' id='semester' className='form-control'>
 								{['1st Semester', '2nd Semester', 'Summer'].map((semester, index) => (
@@ -162,9 +164,9 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='year'>Year Level</label>
-							<select name='year' id='year' className='form-control'>
+							<select {...register('year')} name='year' id='year' className='form-control'>
 								{['1st', '2nd', '3rd', '4th', '5th'].map((year, index) => (
 									<option value={year} key={index}>
 										{year}
@@ -172,9 +174,13 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
+							<label htmlFor='section'>Section</label>
+							<input {...register('section')} type='text' name='section' id='section' className='form-control' />
+						</div>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='course_id'>Course</label>
-							<select name='course_id' id='course_id' className='form-control'>
+							<select {...register('course_id')} name='course_id' id='course_id' className='form-control'>
 								{coursesList?.map((course, index) => (
 									<option value={course.id} key={index}>
 										{course.description}

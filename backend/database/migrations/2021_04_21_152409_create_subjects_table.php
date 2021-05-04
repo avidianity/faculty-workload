@@ -28,6 +28,7 @@ class CreateSubjectsTable extends Migration
             $table->foreignIdFor(new Course())->constrained();
             $table->string('semester');
             $table->string('year');
+            $table->string('section');
             $table->timestamps();
         });
     }

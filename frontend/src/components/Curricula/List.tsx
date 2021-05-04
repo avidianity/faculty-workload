@@ -69,12 +69,8 @@ const List: FC<Props> = (props) => {
 					accessor: 'id',
 				},
 				{
-					title: 'Start Year',
-					accessor: 'start_year',
-				},
-				{
-					title: 'End Year',
-					accessor: 'end_year',
+					title: 'Description',
+					accessor: 'description',
 				},
 				{
 					title: 'Starting School Date',

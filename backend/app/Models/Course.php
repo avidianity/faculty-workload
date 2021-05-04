@@ -13,8 +13,6 @@ class Course extends Model
         'uuid',
         'code',
         'description',
-        'year',
-        'section',
     ];
 
     protected $casts = [

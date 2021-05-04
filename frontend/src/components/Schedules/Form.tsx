@@ -226,11 +226,16 @@ const Form: FC<Props> = (props) => {
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Year Level</label>
-							<input type='text' disabled className='form-control' value={selected.course ? selected.course.year : ''} />
+							<input type='text' disabled className='form-control' value={selected.subject ? selected.subject.year : ''} />
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Section</label>
-							<input type='number' disabled className='form-control' value={selected.course ? selected.course.section : ''} />
+							<input
+								type='number'
+								disabled
+								className='form-control'
+								value={selected.subject ? selected.subject.section : ''}
+							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>
 							<label>Semester</label>

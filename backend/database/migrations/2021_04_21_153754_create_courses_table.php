@@ -18,8 +18,6 @@ class CreateCoursesTable extends Migration
             $table->uuid('uuid');
             $table->string('code');
             $table->string('description');
-            $table->unsignedTinyInteger('year');
-            $table->unsignedTinyInteger('section');
             $table->timestamps();
         });
     }

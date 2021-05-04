@@ -107,28 +107,6 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='year'>Year Level</label>
-							<input
-								type='number'
-								{...register('year')}
-								name='year'
-								id='year'
-								className='form-control'
-								disabled={processing}
-							/>
-						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='section'>Section</label>
-							<input
-								type='number'
-								{...register('section')}
-								name='section'
-								id='section'
-								className='form-control'
-								disabled={processing}
-							/>
-						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>
 								{processing ? <i className='fas fa-circle-notch fa-spin'></i> : 'Save'}

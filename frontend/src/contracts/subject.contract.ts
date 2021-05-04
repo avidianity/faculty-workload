@@ -13,6 +13,7 @@ export interface SubjectContract extends ModelContract {
 	semester: string;
 	curriculum_id: number;
 	year: string;
+	section: string;
 	curriculum?: CurriculumContract;
 	course?: CourseContract;
 }
