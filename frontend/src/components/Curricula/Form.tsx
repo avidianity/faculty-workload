@@ -79,7 +79,7 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12'>
 							<label htmlFor='description'>Description</label>
 							<input {...register('description')} type='text' name='description' id='description' className='form-control' />
 						</div>

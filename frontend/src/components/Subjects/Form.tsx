@@ -2,11 +2,9 @@ import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
 import { v4 } from 'uuid';
-import { CurriculumContract } from '../../contracts/curriculum.contract';
 import { handleError, setValues } from '../../helpers';
-import { useArray, useMode, useNullable } from '../../hooks';
+import { useMode, useNullable } from '../../hooks';
 import { subjectService } from '../../services/subject.service';
-import { CourseContract } from '../../contracts/course.contract';
 import { SubjectContract } from '../../contracts/subject.contract';
 import { useQuery } from 'react-query';
 import { curriculumService } from '../../services/curriculum.service';
@@ -32,13 +30,11 @@ const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
 	const { data: curricula } = useQuery('curricula', () => curriculumService.fetch());
 	const { data: coursesList } = useQuery('courses', () => courseService.fetch());
-	const [curriculum, setCurriculum] = useNullable<CurriculumContract>();
 	const { register, handleSubmit, setValue } = useForm<Inputs>();
 	const [mode, setMode] = useMode();
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
-	const [courses, setCourses] = useArray<CourseContract>();
 
 	const submit = async (payload: SubjectContract) => {
 		setProcessing(true);
@@ -63,7 +59,6 @@ const Form: FC<Props> = (props) => {
 			setID(subject.id!);
 
 			setValues(subject, setValue);
-			setCurriculum(subject.curriculum!);
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -88,19 +83,7 @@ const Form: FC<Props> = (props) => {
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='curriculum_id'>Curricula</label>
-							<select
-								{...register('curriculum_id')}
-								name='curriculum_id'
-								id='curriculum_id'
-								className='form-control'
-								onChange={(e) => {
-									const curriculum = curricula?.find((curriculum) => curriculum.id === e.target.value.toNumber());
-									if (curriculum) {
-										setCurriculum(curriculum);
-									} else {
-										setCurriculum(null);
-									}
-								}}>
+							<select {...register('curriculum_id')} name='curriculum_id' id='curriculum_id' className='form-control'>
 								<option> -- Select -- </option>
 								{curricula?.map((curriculum, index) => (
 									<option hidden={match !== undefined} value={curriculum.id} key={index}>
