@@ -86,8 +86,6 @@ class CourseController extends Controller
         $fields = [
             'code',
             'description',
-            'year',
-            'section',
         ];
 
         foreach ($fields as $field) {
