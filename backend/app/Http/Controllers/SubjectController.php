@@ -90,6 +90,8 @@ class SubjectController extends Controller
             'semester',
             'year',
             'course_id',
+            'code',
+            'description',
         ];
 
         foreach ($fields as $field) {
