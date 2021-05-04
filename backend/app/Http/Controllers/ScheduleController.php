@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Models\Teacher;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -108,6 +110,17 @@ class ScheduleController extends Controller
             $builder = $builder->where($field, '!=', $exception);
         }
 
-        return $builder->count() === 0;
+        $builder = $builder->whereHas('days', function (Builder $builder) use ($data) {
+            return $builder->where('day', $data['day'])
+                ->where('start_time', '>=', $data['start_time'])
+                ->where('end_time', '<=', $data['end_time']);
+        });
+
+        return $builder->count() === 0 || Teacher::whereId($data['teacher_id'])
+            ->whereHas('schedules', function (Builder $builder) use ($data) {
+                return $builder
+                    ->where('start_time', '>=', $data['start_time'])
+                    ->where('end_time', '<=', $data['end_time']);
+            })->count() === 0;
     }
 }

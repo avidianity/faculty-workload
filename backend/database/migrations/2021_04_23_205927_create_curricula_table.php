@@ -15,8 +15,7 @@ class CreateCurriculaTable extends Migration
     {
         Schema::create('curricula', function (Blueprint $table) {
             $table->id();
-            $table->year('start_year');
-            $table->year('end_year');
+            $table->string('description');
             $table->timestamp('start_school_date')->nullable();
             $table->timestamp('end_school_date')->nullable();
             $table->timestamps();

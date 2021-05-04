@@ -21,6 +21,7 @@ const Form: FC<Props> = (props) => {
 		try {
 			await (mode === 'Add' ? userService.create(payload) : userService.update(id, payload));
 			toastr.info('User saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {

@@ -44,6 +44,7 @@ const Form: FC<Props> = (props) => {
 
 			await (mode === 'Add' ? teacherService.create(payload) : teacherService.update(id, payload));
 			toastr.info('Teacher saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {

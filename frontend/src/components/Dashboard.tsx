@@ -67,7 +67,7 @@ const Dashboard: FC<Props> = (props) => {
 			<Navbar history={history} isActive={closeSidebar} toggleSidebar={() => setCloseSidebar(!closeSidebar)} />
 			<div className='app-main h-100'>
 				<Sidebar />
-				<div className='app-main__outer'>
+				<div className='app-main__outer' style={{ backgroundColor: '#F1F4F6' }}>
 					<div className='dashboard-hero d-flex align-items-center justify-content-center flex-column px-4'>
 						<h1 className='text-white text-center'>Polytechnic University of the Philippines</h1>
 						<p className='text-center' style={{ color: '#ff8e00' }}>

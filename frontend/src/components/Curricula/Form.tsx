@@ -11,8 +11,7 @@ import { CurriculumContract } from '../../contracts/curriculum.contract';
 type Props = {};
 
 type Inputs = {
-	start_year: string;
-	end_year: string;
+	description: string;
 	start_school_date: string;
 	end_school_date: string;
 };
@@ -28,9 +27,6 @@ const Form: FC<Props> = (props) => {
 	const year = dayjs().year();
 
 	const years: number[] = [];
-
-	const [startYear, setStartYear] = useState(year);
-	const [endYear, setEndYear] = useState(year + 4);
 	const [startSchoolDate, setStartSchoolDate] = useNullable<Date>();
 	const [endSchoolDate, setEndSchoolDate] = useNullable<Date>();
 
@@ -45,6 +41,7 @@ const Form: FC<Props> = (props) => {
 			payload.end_school_date = endSchoolDate?.toJSON() || '';
 			await (mode === 'Add' ? curriculumService.create(payload) : curriculumService.update(id, payload));
 			toastr.info('Curriculum saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {
@@ -83,47 +80,13 @@ const Form: FC<Props> = (props) => {
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
 						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='start_year'>Start Year</label>
-							<select
-								{...register('start_year')}
-								name='start_year'
-								id='start_year'
-								className='form-control'
-								value={startYear}
-								onChange={(e) => {
-									setStartYear(e.target.value.toNumber());
-								}}>
-								{years.map((year, index) => (
-									<option value={year} key={index}>
-										{year}
-									</option>
-								))}
-							</select>
-						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='end_year'>End Year</label>
-							<select
-								{...register('end_year')}
-								name='end_year'
-								id='end_year'
-								className='form-control'
-								value={endYear}
-								onChange={(e) => {
-									setEndYear(e.target.value.toNumber());
-								}}>
-								{years.map((year, index) => (
-									<option value={year} key={index}>
-										{year}
-									</option>
-								))}
-							</select>
+							<label htmlFor='description'>Description</label>
+							<input {...register('description')} type='text' name='description' id='description' className='form-control' />
 						</div>
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='start_school_date'>Starting School Date</label>
 							<Flatpickr
 								options={{
-									minDate: dayjs(`January 01, ${startYear}`, 'MMMM DD, YYYY').toDate(),
-									maxDate: dayjs(`December 31, ${endYear}`, 'MMMM DD, YYYY').toDate(),
 									altInput: true,
 								}}
 								value={startSchoolDate || undefined}
@@ -142,8 +105,7 @@ const Form: FC<Props> = (props) => {
 							<label htmlFor='end_school_date'>Ending School Date</label>
 							<Flatpickr
 								options={{
-									minDate: dayjs(`January 01, ${startYear}`, 'MMMM DD, YYYY').toDate(),
-									maxDate: dayjs(`December 31, ${endYear}`, 'MMMM DD, YYYY').toDate(),
+									minDate: startSchoolDate || undefined,
 									altInput: true,
 								}}
 								value={endSchoolDate || undefined}

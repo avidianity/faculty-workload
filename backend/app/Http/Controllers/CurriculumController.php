@@ -30,8 +30,7 @@ class CurriculumController extends Controller
 
         $curriculum = Curriculum::whereYear('start_school_date', Carbon::parse($data['start_school_date'])->year)
             ->whereYear('end_school_date', Carbon::parse($data['end_school_date'])->year)
-            ->whereStartYear($data['start_year'])
-            ->whereEndYear($data['end_year'])
+            ->whereDescription($data['description'])
             ->first();
 
         if ($curriculum) {
@@ -65,8 +64,7 @@ class CurriculumController extends Controller
 
         $exists = Curriculum::whereYear('start_school_date', Carbon::parse($data['start_school_date'])->year)
             ->whereYear('end_school_date', Carbon::parse($data['end_school_date'])->year)
-            ->whereStartYear($data['start_year'])
-            ->whereEndYear($data['end_year'])
+            ->whereDescription($data['description'])
             ->where('id', '!=', $curriculum->id)
             ->first();
 

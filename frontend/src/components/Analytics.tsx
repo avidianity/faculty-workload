@@ -33,50 +33,52 @@ const Analytics: FC<Props> = (props) => {
 
 	return (
 		<div className='container pt-5'>
-			{teacher ? (
-				<div className='card shadow'>
-					<div className='card-header'>
-						<h4 className='card-title'>
-							{teacher.last_name}, {teacher.first_name} {teacher.middle_name || ''} ({teacher.account_number})
-						</h4>
-					</div>
-					<div className='card-body table-responsive'>
-						<table className='table table-sm table-bordered'>
-							<thead>
-								<tr>
-									<th className='text-center'>ID</th>
-									<th className='text-center'>Subject Code</th>
-									<th className='text-center'>Description</th>
-									<th className='text-center'>Lec</th>
-									<th className='text-center'>Lab</th>
-									<th className='text-center'>Units</th>
-									<th className='text-center'>Schedule</th>
-								</tr>
-							</thead>
-							<tbody>
-								{teacher.schedules?.map((schedule, index) => (
-									<tr key={index}>
-										<td className='text-center'>{schedule.id}</td>
-										<td className='text-center'>{schedule.subject?.code}</td>
-										<td className='text-center'>{schedule.subject?.description}</td>
-										<td className='text-center'>{schedule.subject?.lec_hours}</td>
-										<td className='text-center'>{schedule.subject?.lab_hours}</td>
-										<td className='text-center'>{schedule.subject?.units}</td>
-										<td className='text-center'>
-											{schedule.days.map((day) => (
-												<div>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
-													day.end_time,
-													'HH:mm:ss'
-												).format('hh:mm A')}`}</div>
-											))}
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+			<div className='card shadow'>
+				<div className='card-header'>
+					<h4 className='card-title'>
+						{teacher ? (
+							<>
+								{teacher?.last_name}, {teacher?.first_name} {teacher?.middle_name || ''} ({teacher?.account_number})
+							</>
+						) : null}
+					</h4>
 				</div>
-			) : null}
+				<div className='card-body table-responsive'>
+					<table className='table table-sm table-bordered'>
+						<thead>
+							<tr>
+								<th className='text-center'>ID</th>
+								<th className='text-center'>Subject Code</th>
+								<th className='text-center'>Description</th>
+								<th className='text-center'>Lec</th>
+								<th className='text-center'>Lab</th>
+								<th className='text-center'>Units</th>
+								<th className='text-center'>Schedule</th>
+							</tr>
+						</thead>
+						<tbody>
+							{teacher?.schedules?.map((schedule, index) => (
+								<tr key={index}>
+									<td className='text-center'>{schedule.id}</td>
+									<td className='text-center'>{schedule.subject?.code}</td>
+									<td className='text-center'>{schedule.subject?.description}</td>
+									<td className='text-center'>{schedule.subject?.lec_hours}</td>
+									<td className='text-center'>{schedule.subject?.lab_hours}</td>
+									<td className='text-center'>{schedule.subject?.units}</td>
+									<td className='text-center'>
+										{schedule.days.map((day) => (
+											<div>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
+												day.end_time,
+												'HH:mm:ss'
+											).format('hh:mm A')}`}</div>
+										))}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	);
 };

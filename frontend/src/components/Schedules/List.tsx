@@ -1,9 +1,13 @@
+import axios from 'axios';
 import dayjs from 'dayjs';
+import download from 'downloadjs';
 import React, { FC } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import { Asker, handleError } from '../../helpers';
+import { UserContract } from '../../contracts/user.contract';
+import { Asker, handleError, outIf } from '../../helpers';
 import { useURL } from '../../hooks';
+import { State } from '../../libraries/State';
 import { scheduleService } from '../../services/schedule.service';
 import Table from '../Shared/Table';
 
@@ -30,6 +34,8 @@ const List: FC<Props> = (props) => {
 		}
 	};
 
+	const user = State.getInstance().get<UserContract>('user');
+
 	return (
 		<Table
 			onRefresh={() => refetch()}
@@ -46,13 +52,13 @@ const List: FC<Props> = (props) => {
 					course_description: schedule.course?.description,
 					year_level: schedule.course?.year,
 					section: schedule.course?.section,
-					curriculum_year: `${schedule.subject?.curriculum?.start_year} - ${schedule.subject?.curriculum?.end_year}`,
+					curriculum_description: `${schedule.subject?.curriculum?.description}`,
 					school_year: `${dayjs(schedule.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
 						schedule.subject?.curriculum?.end_school_date
 					).format('YYYY')}`,
 					days: schedule.days.map((day) => day.day).join(', '),
 					actions: (
-						<div className='d-flex'>
+						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
 							<Link to={url(`${schedule.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 								<i className='fas fa-edit'></i>
 							</Link>
@@ -78,8 +84,8 @@ const List: FC<Props> = (props) => {
 					accessor: 'subject',
 				},
 				{
-					title: 'Curriculum Year',
-					accessor: 'curriculum_year',
+					title: 'Curriculum Description',
+					accessor: 'curriculum_description',
 				},
 				{
 					title: 'School Year',
@@ -132,14 +138,25 @@ const List: FC<Props> = (props) => {
 			]}
 			buttons={
 				<>
-					<Link to={url(`add`)} className='btn btn-primary btn-sm ml-2'>
-						<i className='fas fa-plus'></i>
-					</Link>
+					{user?.role === 'Admin' ? (
+						<Link to={url(`add`)} className='btn btn-primary btn-sm ml-2'>
+							<i className='fas fa-plus'></i>
+						</Link>
+					) : null}
 					<a
 						className='btn btn-info btn-sm mx-2'
 						href={`${process.env.REACT_APP_SERVER_URL}/exports/schedule`}
-						target='_blank'
-						rel='noreferrer'>
+						onClick={async (e) => {
+							e.preventDefault();
+							const url = e.currentTarget.getAttribute('href');
+							try {
+								const { data, headers } = await axios.get<Blob>(url || '', { responseType: 'blob' });
+								download(data, 'schedules.xlsx', headers['content-type']);
+							} catch (error) {
+								console.log(error.toJSON());
+								toastr.error('Unable to export. Please try again later.');
+							}
+						}}>
 						<i className='fas fa-file-export'></i>
 					</a>
 				</>

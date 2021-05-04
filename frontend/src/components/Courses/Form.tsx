@@ -24,22 +24,9 @@ const Form: FC<Props> = (props) => {
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
 
-	const formats = [/[A-Z]{4} \d-\d/g, /[A-Z]{4}-[A-Z]{4} \d-\d/g];
-
 	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
-			let passes = false;
-			for (const format of formats) {
-				if (format.test(payload.code)) {
-					passes = true;
-				}
-			}
-
-			if (!passes) {
-				return toastr.error('Code does not match correct format.');
-			}
-
 			if (payload.code.length === 8) {
 				const [year, section] = payload.code.split('-').map((fragment) => fragment.toNumber());
 
@@ -60,6 +47,7 @@ const Form: FC<Props> = (props) => {
 
 			await (mode === 'Add' ? courseService.create(payload) : courseService.update(id, payload));
 			toastr.info('Academic Program saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {
@@ -107,9 +95,6 @@ const Form: FC<Props> = (props) => {
 								className='form-control'
 								disabled={processing}
 							/>
-							<small className='form-text text-muted'>
-								Ex.: <b>BSIT 4-1, BSIT-MATH 4-1</b>
-							</small>
 						</div>
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='description'>Program Description</label>

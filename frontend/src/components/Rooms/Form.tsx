@@ -26,6 +26,7 @@ const Form: FC<Props> = (props) => {
 
 			await (mode === 'Add' ? roomService.create(payload) : roomService.update(id, payload));
 			toastr.info('Room saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {

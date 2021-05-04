@@ -27,6 +27,7 @@ class UserFactory extends Factory
             'password' => 'password',
             'confirmed' => true,
             'blocked' => false,
+            'role' => 'Admin',
         ];
     }
 

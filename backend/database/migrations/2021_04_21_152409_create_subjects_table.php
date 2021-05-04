@@ -24,11 +24,10 @@ class CreateSubjectsTable extends Migration
             $table->unsignedTinyInteger('units');
             $table->unsignedSmallInteger('lab_hours');
             $table->unsignedSmallInteger('lec_hours');
-            $table->boolean('semester_1st');
-            $table->boolean('semester_2nd');
-            $table->boolean('semester_summer');
             $table->foreignIdFor(new Curriculum())->constrained();
-            $table->json('years');
+            $table->foreignIdFor(new Course())->constrained();
+            $table->string('semester');
+            $table->string('year');
             $table->timestamps();
         });
     }

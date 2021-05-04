@@ -15,7 +15,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        return Subject::with('courses', 'curriculum')->get();
+        return Subject::with('course', 'curriculum')->get();
     }
 
     /**
@@ -34,10 +34,6 @@ class SubjectController extends Controller
 
         $subject = Subject::create($data);
 
-        $subject->courses()->sync(Course::findMany(collect($data['courses'])->map(function ($course) {
-            return $course['id'];
-        })));
-
         return $subject;
     }
 
@@ -49,7 +45,7 @@ class SubjectController extends Controller
      */
     public function show(Subject $subject)
     {
-        $subject->load('courses', 'curriculum');
+        $subject->load('course', 'curriculum');
         return $subject;
     }
 
@@ -69,10 +65,6 @@ class SubjectController extends Controller
         }
 
         $subject->update($data);
-
-        $subject->courses()->sync(Course::findMany(collect($request->get('courses', []))->map(function ($course) {
-            return $course['id'];
-        })));
 
         return $subject;
     }
@@ -95,8 +87,9 @@ class SubjectController extends Controller
         $builder = new Subject();
 
         $fields = [
-            'code',
-            'curriculum_id',
+            'semester',
+            'year',
+            'course_id',
         ];
 
         foreach ($fields as $field) {

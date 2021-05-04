@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\JSON;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,18 +17,10 @@ class Subject extends Model
         'units',
         'lab_hours',
         'lec_hours',
-        'semester_1st',
-        'semester_2nd',
-        'semester_summer',
+        'semester',
         'curriculum_id',
-        'years',
-    ];
-
-    protected $casts = [
-        'years' => JSON::class,
-        'semester_1st' => 'boolean',
-        'semester_2nd' => 'boolean',
-        'semester_summer' => 'boolean',
+        'year',
+        'course_id',
     ];
 
     protected static function booted()
@@ -39,9 +30,9 @@ class Subject extends Model
         });
     }
 
-    public function courses()
+    public function course()
     {
-        return $this->belongsToMany(Course::class)->withTimestamps();
+        return $this->belongsTo(Course::class);
     }
 
     public function schedules()

@@ -87,6 +87,7 @@ const Form: FC<Props> = (props) => {
 
 			await (mode === 'Add' ? scheduleService.create(payload) : scheduleService.update(id, payload));
 			toastr.info('Schedule saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {
@@ -159,24 +160,18 @@ const Form: FC<Props> = (props) => {
 								<option> -- Select -- </option>
 								{subjects?.map((subject, index) => (
 									<option value={subject.id} key={index}>
-										{subject.description} - {subject.curriculum?.start_year}-{subject.curriculum?.end_year} | S.Y{' '}
-										{dayjs(subject.curriculum?.start_school_date).format('YYYY')}-
-										{dayjs(subject.curriculum?.end_school_date).format('YYYY')}
+										{subject.description} | {subject.code} {subject.course?.code}
 									</option>
 								))}
 							</select>
 						</div>
 						<div className='form-group col-12 col-md-4'>
-							<label>Curriculum Year</label>
+							<label>Curriculum Description</label>
 							<input
 								type='text'
 								disabled
 								className='form-control'
-								value={
-									selected.subject
-										? `${selected.subject?.curriculum?.start_year} - ${selected.subject?.curriculum?.end_year}`
-										: ''
-								}
+								value={selected.subject ? `${selected.subject?.curriculum?.description}` : ''}
 							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>
@@ -213,15 +208,11 @@ const Form: FC<Props> = (props) => {
 								}}
 								disabled={processing}>
 								<option> -- Select -- </option>
-								{courses
-									?.filter((course) => {
-										return selected.subject?.courses?.find((c) => c.id === course.id) !== undefined;
-									})
-									.map((course, index) => (
-										<option value={course.id} key={index}>
-											{course.code}
-										</option>
-									))}
+								{courses?.map((course, index) => (
+									<option value={course.id} key={index}>
+										{course.code}
+									</option>
+								))}
 							</select>
 						</div>
 						<div className='form-group col-12 col-md-3'>
@@ -239,49 +230,16 @@ const Form: FC<Props> = (props) => {
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Section</label>
-							<input type='text' disabled className='form-control' value={selected.course ? selected.course.section : ''} />
+							<input type='number' disabled className='form-control' value={selected.course ? selected.course.section : ''} />
 						</div>
 						<div className='form-group col-12 col-md-4'>
-							<h4>Semesters</h4>
-							<div className='position-relative form-check'>
-								<label className={`form-check-label ${outIf(selected.subject?.semester_1st === false, 'text-muted')}`}>
-									<input
-										{...register('semester')}
-										name='semester'
-										type='radio'
-										className='form-check-input'
-										value='1st Semester'
-										disabled={processing || selected.subject?.semester_1st === false}
-									/>
-									1st Semester
-								</label>
-							</div>
-							<div className='position-relative form-check'>
-								<label className={`form-check-label ${outIf(selected.subject?.semester_2nd === false, 'text-muted')}`}>
-									<input
-										{...register('semester')}
-										name='semester'
-										type='radio'
-										className='form-check-input'
-										value='2nd Semester'
-										disabled={processing || selected.subject?.semester_2nd === false}
-									/>
-									2nd Semester
-								</label>
-							</div>
-							<div className='position-relative form-check'>
-								<label className={`form-check-label ${outIf(selected.subject?.semester_summer === false, 'text-muted')}`}>
-									<input
-										{...register('semester')}
-										name='semester'
-										type='radio'
-										className='form-check-input'
-										value='Summer'
-										disabled={processing || selected.subject?.semester_summer === false}
-									/>
-									Summer
-								</label>
-							</div>
+							<label>Semester</label>
+							<input
+								type='text'
+								disabled
+								className='form-control'
+								value={selected.subject ? selected.subject?.semester : ''}
+							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='teacher_id'>Teacher</label>

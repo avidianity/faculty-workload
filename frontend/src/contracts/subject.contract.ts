@@ -10,11 +10,9 @@ export interface SubjectContract extends ModelContract {
 	units: number;
 	lab_hours: number;
 	lec_hours: number;
-	semester_1st: boolean;
-	semester_2nd: boolean;
-	semester_summer: boolean;
+	semester: string;
 	curriculum_id: number;
-	years: string[];
+	year: string;
 	curriculum?: CurriculumContract;
-	courses?: CourseContract[];
+	course?: CourseContract;
 }

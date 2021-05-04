@@ -10,8 +10,7 @@ class Curriculum extends Model
     use HasFactory;
 
     protected $fillable = [
-        'start_year',
-        'end_year',
+        'description',
         'start_school_date',
         'end_school_date',
     ];

@@ -1,8 +1,10 @@
+import axios from 'axios';
+import download from 'downloadjs';
 import React, { FC } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { UserContract } from '../../contracts/user.contract';
-import { Asker, handleError } from '../../helpers';
+import { Asker, handleError, outIf } from '../../helpers';
 import { useURL } from '../../hooks';
 import { State } from '../../libraries/State';
 import { userService } from '../../services/user.service';
@@ -47,7 +49,7 @@ const List: FC<Props> = (props) => {
 						</>
 					),
 					actions: (
-						<div className='d-flex'>
+						<div className={`d-flex ${outIf(self?.role !== 'Admin', 'd-none')}`}>
 							<Link to={url(`${user.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 								<i className='fas fa-edit'></i>
 							</Link>
@@ -101,14 +103,25 @@ const List: FC<Props> = (props) => {
 			}}
 			buttons={
 				<>
-					<Link to={url(`add`)} className='btn btn-primary btn-sm ml-2'>
-						<i className='fas fa-plus'></i>
-					</Link>
+					{self?.role === 'Admin' ? (
+						<Link to={url(`add`)} className='btn btn-primary btn-sm ml-2'>
+							<i className='fas fa-plus'></i>
+						</Link>
+					) : null}
 					<a
 						className='btn btn-info btn-sm mx-2'
 						href={`${process.env.REACT_APP_SERVER_URL}/exports/user`}
-						target='_blank'
-						rel='noreferrer'>
+						onClick={async (e) => {
+							e.preventDefault();
+							const url = e.currentTarget.getAttribute('href');
+							try {
+								const { data, headers } = await axios.get<Blob>(url || '', { responseType: 'blob' });
+								download(data, 'teacher.xlsx', headers['content-type']);
+							} catch (error) {
+								console.log(error.toJSON());
+								toastr.error('Unable to export. Please try again later.');
+							}
+						}}>
 						<i className='fas fa-file-export'></i>
 					</a>
 				</>

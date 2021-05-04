@@ -12,7 +12,6 @@ import { useQuery } from 'react-query';
 import { curriculumService } from '../../services/curriculum.service';
 import { courseService } from '../../services/course.service';
 import dayjs from 'dayjs';
-import { FreeObject } from '../../contracts/misc';
 
 type Props = {};
 
@@ -24,10 +23,9 @@ type Inputs = {
 	units: number;
 	lab_hours: string;
 	lec_hours: string;
-	semester_1st: boolean;
-	semester_2nd: boolean;
-	semester_summer: boolean;
+	semester: string;
 	curriculum_id: number;
+	year: string;
 };
 
 const Form: FC<Props> = (props) => {
@@ -40,7 +38,6 @@ const Form: FC<Props> = (props) => {
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
-	const [years, setYears] = useArray<string>();
 	const [courses, setCourses] = useArray<CourseContract>();
 
 	const submit = async (payload: SubjectContract) => {
@@ -50,11 +47,9 @@ const Form: FC<Props> = (props) => {
 				payload.uuid = v4();
 			}
 
-			payload.courses = courses;
-			payload.years = years;
-
 			await (mode === 'Add' ? subjectService.create(payload) : subjectService.update(id, payload));
 			toastr.info('Subject saved successfully.', 'Notice');
+			history.goBack();
 		} catch (error) {
 			handleError(error);
 		} finally {
@@ -68,8 +63,6 @@ const Form: FC<Props> = (props) => {
 			setID(subject.id!);
 
 			setValues(subject, setValue);
-			setYears(subject.years);
-			setCourses(subject.courses!);
 			setCurriculum(subject.curriculum!);
 			setMode('Edit');
 		} catch (error) {
@@ -84,18 +77,6 @@ const Form: FC<Props> = (props) => {
 		}
 		// eslint-disable-next-line
 	}, []);
-
-	const renderedCurriculums: { start: number; end: number; id: number }[] = [];
-
-	const yearMap: FreeObject = {
-		'1st Year': 1,
-		'2nd Year': 2,
-		'3rd Year': 3,
-		'4th Year': 4,
-		'5th Year': 5,
-	};
-
-	const selectedYears: number[] = years.map((year) => yearMap[year]);
 
 	return (
 		<div className='container'>
@@ -121,50 +102,15 @@ const Form: FC<Props> = (props) => {
 									}
 								}}>
 								<option> -- Select -- </option>
-								{curricula?.map((curriculum, index) => {
-									const match = renderedCurriculums.find(
-										(c) => c.start === curriculum.start_year && c.end === curriculum.end_year
-									);
-
-									if (match === undefined) {
-										renderedCurriculums.push({
-											start: curriculum.start_year,
-											end: curriculum.end_year,
-											id: curriculum.id!,
-										});
-									}
-
-									return (
-										<option hidden={match !== undefined} value={curriculum.id} key={index}>
-											{curriculum.start_year} - {curriculum.end_year}
-										</option>
-									);
-								})}
+								{curricula?.map((curriculum, index) => (
+									<option hidden={match !== undefined} value={curriculum.id} key={index}>
+										{curriculum.description} | {dayjs(curriculum.start_school_date).format('MMMM DD, YYYY')} -{' '}
+										{dayjs(curriculum.end_school_date).format('MMMM DD, YYYY')}
+									</option>
+								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-6'>
-							<label>School Year</label>
-							<select
-								className='form-control'
-								onChange={(e) => {
-									const curriculum = curricula?.find((curriculum) => curriculum.id === e.target.value.toNumber());
-
-									if (curriculum) {
-										setValue('curriculum_id', curriculum.id!);
-										setCurriculum(curriculum);
-									}
-								}}>
-								<option> -- Select -- </option>
-								{curriculum
-									? curricula?.map((c, index) => (
-											<option value={c.id} key={index} selected={mode === 'Edit' && c.id === curriculum.id}>
-												{dayjs(c.start_school_date).format('YYYY')} - {dayjs(c.end_school_date).format('YYYY')}
-											</option>
-									  ))
-									: null}
-							</select>
-						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
+						<div className='form-group col-12 col-md-6 col-lg-6'>
 							<label htmlFor='prerequisites'>Prerequisites</label>
 							<input
 								type='text'
@@ -175,11 +121,11 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
+						<div className='form-group col-12 col-md-6 col-lg-4'>
 							<label htmlFor='code'>Code</label>
 							<input type='text' {...register('code')} name='code' id='code' className='form-control' disabled={processing} />
 						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
+						<div className='form-group col-12 col-md-6 col-lg-4'>
 							<label htmlFor='description'>Description</label>
 							<input
 								type='text'
@@ -190,7 +136,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6 col-lg-3'>
+						<div className='form-group col-12 col-md-6 col-lg-4'>
 							<label htmlFor='units'>Unit Credits</label>
 							<input
 								type='number'
@@ -224,93 +170,34 @@ const Form: FC<Props> = (props) => {
 							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>
-							<h4>Semesters</h4>
-							<div className='position-relative form-check'>
-								<label className='form-check-label'>
-									<input
-										type='checkbox'
-										{...register('semester_1st')}
-										name='semester_1st'
-										className='form-check-input'
-										disabled={processing}
-									/>{' '}
-									1st Semester
-								</label>
-							</div>
-							<div className='position-relative form-check'>
-								<label className='form-check-label'>
-									<input
-										type='checkbox'
-										{...register('semester_2nd')}
-										name='semester_2nd'
-										className='form-check-input'
-										disabled={processing}
-									/>{' '}
-									2nd Semester
-								</label>
-							</div>
-							<div className='position-relative form-check'>
-								<label className='form-check-label'>
-									<input
-										type='checkbox'
-										{...register('semester_summer')}
-										name='semester_summer'
-										className='form-check-input'
-										disabled={processing}
-									/>{' '}
-									Summer
-								</label>
-							</div>
-						</div>
-						<div className='form-group col-12 col-md-4'>
-							<h4>Year Levels</h4>
-							{['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'].map((year, index) => (
-								<div className='position-relative form-check' key={index}>
-									<label className='form-check-label'>
-										<input
-											type='checkbox'
-											className='form-check-input'
-											disabled={processing}
-											checked={years.includes(year)}
-											onChange={(e) => {
-												if (years.includes(year)) {
-													years.splice(years.indexOf(year), 1);
-													setYears([...years]);
-												} else {
-													setYears([...years, year]);
-												}
-											}}
-										/>{' '}
-										{year}
-									</label>
-								</div>
-							))}
-						</div>
-						<div className='form-group col-12 col-md-4'>
-							<h4>Courses</h4>
-							{coursesList
-								?.filter((course) => selectedYears.includes(course.year))
-								.map((course, index) => (
-									<div className='position-relative form-check' key={index}>
-										<label className='form-check-label'>
-											<input
-												type='checkbox'
-												className='form-check-input'
-												disabled={processing}
-												checked={courses.find((c) => c.id === course.id) !== undefined}
-												onChange={() => {
-													if (courses.find((c) => c.id === course.id) !== undefined) {
-														courses.splice(courses.indexOf(course), 1);
-														setCourses([...courses]);
-													} else {
-														setCourses([...courses, course]);
-													}
-												}}
-											/>{' '}
-											{course.code}
-										</label>
-									</div>
+							<label htmlFor='semester'>Semester</label>
+							<select {...register('semester')} name='semester' id='semester' className='form-control'>
+								{['1st Semester', '2nd Semester', 'Summer'].map((semester, index) => (
+									<option value={semester} key={index}>
+										{semester}
+									</option>
 								))}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='year'>Year Level</label>
+							<select name='year' id='year' className='form-control'>
+								{['1st', '2nd', '3rd', '4th', '5th'].map((year, index) => (
+									<option value={year} key={index}>
+										{year}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='course_id'>Course</label>
+							<select name='course_id' id='course_id' className='form-control'>
+								{coursesList?.map((course, index) => (
+									<option value={course.id} key={index}>
+										{course.description}
+									</option>
+								))}
+							</select>
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>
