@@ -17,4 +17,5 @@ export interface ScheduleContract extends ModelContract {
 	subject?: SubjectContract;
 	room?: RoomContract;
 	course?: CourseContract;
+	section: number;
 }

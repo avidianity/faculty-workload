@@ -29,6 +29,7 @@ class CreateSchedulesTable extends Migration
                 'Summer',
             ]);
             $table->unsignedTinyInteger('slot');
+            $table->unsignedTinyInteger('section');
             $table->timestamps();
         });
     }

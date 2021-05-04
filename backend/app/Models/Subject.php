@@ -21,7 +21,6 @@ class Subject extends Model
         'curriculum_id',
         'year',
         'course_id',
-        'section',
     ];
 
     protected static function booted()

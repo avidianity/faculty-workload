@@ -51,7 +51,7 @@ const List: FC<Props> = (props) => {
 					course_code: schedule.course?.code,
 					course_description: schedule.course?.description,
 					year_level: schedule.subject?.year,
-					section: schedule.subject?.section,
+					section: schedule.section,
 					curriculum_description: `${schedule.subject?.curriculum?.description}`,
 					school_year: `${dayjs(schedule.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
 						schedule.subject?.curriculum?.end_school_date

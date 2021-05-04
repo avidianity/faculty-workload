@@ -23,7 +23,6 @@ type Inputs = {
 	lec_hours: string;
 	semester: string;
 	curriculum_id: number;
-	section: string;
 	year: string;
 	course_id: number;
 };
@@ -154,7 +153,7 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-3'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='semester'>Semester</label>
 							<select {...register('semester')} name='semester' id='semester' className='form-control'>
 								{['1st Semester', '2nd Semester', 'Summer'].map((semester, index) => (
@@ -164,7 +163,7 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-3'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='year'>Year Level</label>
 							<select {...register('year')} name='year' id='year' className='form-control'>
 								{['1st', '2nd', '3rd', '4th', '5th'].map((year, index) => (
@@ -174,11 +173,7 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-3'>
-							<label htmlFor='section'>Section</label>
-							<input {...register('section')} type='text' name='section' id='section' className='form-control' />
-						</div>
-						<div className='form-group col-12 col-md-3'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='course_id'>Course</label>
 							<select {...register('course_id')} name='course_id' id='course_id' className='form-control'>
 								{coursesList?.map((course, index) => (

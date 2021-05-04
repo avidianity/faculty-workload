@@ -16,6 +16,7 @@ class Schedule extends Model
         'course_id',
         'semester',
         'slot',
+        'section',
     ];
 
     public function teacher()

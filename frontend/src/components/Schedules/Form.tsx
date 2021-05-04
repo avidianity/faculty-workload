@@ -26,6 +26,7 @@ type Inputs = {
 	course_id: number;
 	semester: string;
 	slot: number;
+	section: number;
 	days: Day[];
 };
 
@@ -230,12 +231,7 @@ const Form: FC<Props> = (props) => {
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Section</label>
-							<input
-								type='number'
-								disabled
-								className='form-control'
-								value={selected.subject ? selected.subject.section : ''}
-							/>
+							<input {...register('section')} type='number' name='section' className='form-control' />
 						</div>
 						<div className='form-group col-12 col-md-4'>
 							<label>Semester</label>
