@@ -100,6 +100,7 @@ class ScheduleController extends Controller
             'subject_id',
             'room_id',
             'course_id',
+            'section',
         ];
 
         foreach ($fields as $field) {
@@ -110,13 +111,17 @@ class ScheduleController extends Controller
             $builder = $builder->where($field, '!=', $exception);
         }
 
-        $builder = $builder->whereHas('days', function (Builder $builder) use ($data) {
-            return $builder->where('day', $data['day'])
-                ->where('start_time', '>=', $data['start_time'])
-                ->where('end_time', '<=', $data['end_time']);
-        });
+        foreach ($data['days'] as $day) {
+            $builder = $builder->whereHas('days', function (Builder $builder) use ($day) {
+                return $builder->where('day', $day['day'])
+                    ->where('start_time', '>=', $day['start_time'])
+                    ->where('end_time', '<=', $day['end_time']);
+            });
+        }
 
-        return $builder->count() === 0 || Teacher::whereId($data['teacher_id'])
+
+
+        return $builder->count() === 0 && Teacher::whereId($data['teacher_id'])
             ->whereHas('schedules', function (Builder $builder) use ($data) {
                 return $builder
                     ->where('start_time', '>=', $data['start_time'])

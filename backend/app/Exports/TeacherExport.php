@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Teacher;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -19,13 +20,13 @@ class TeacherExport implements FromCollection, WithHeadings, Responsable
      */
     public function collection()
     {
-        return Teacher::all();
+        return Teacher::all()->toExportable();
     }
 
     public function headings(): array
     {
         $collection = $this->collection();
 
-        return array_keys($collection->count() > 0 ? $collection->first()->toArray() : []);
+        return array_keys($collection->count() > 0 ? $collection->first() : []);
     }
 }

@@ -21,6 +21,13 @@ axios.defaults.headers.common['Accept'] = 'application/json';
 
 const state = State.getInstance();
 
+axios.interceptors.request.use((config) => {
+	if (state.has('token')) {
+		config.headers['Authorization'] = `Bearer ${state.get('token')}`;
+	}
+	return config;
+});
+
 if (state.has('token')) {
 	const token = state.get('token');
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;

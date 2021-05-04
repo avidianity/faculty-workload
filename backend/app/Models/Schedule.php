@@ -14,7 +14,6 @@ class Schedule extends Model
         'subject_id',
         'room_id',
         'course_id',
-        'semester',
         'slot',
         'section',
     ];

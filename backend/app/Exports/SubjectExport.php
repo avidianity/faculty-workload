@@ -19,13 +19,20 @@ class SubjectExport implements FromCollection, WithHeadings, Responsable
      */
     public function collection()
     {
-        return Subject::all();
+        return Subject::with('course', 'curriculum')
+            ->get()
+            ->toExportable()
+            ->map(function (array $data) {
+                $data['course'] = $data['course']['code'];
+                $data['curriculum'] = $data['curriculum']['description'];
+                return $data;
+            });
     }
 
     public function headings(): array
     {
         $collection = $this->collection();
 
-        return array_keys($collection->count() > 0 ? $collection->first()->toArray() : []);
+        return array_keys($collection->count() > 0 ? $collection->first() : []);
     }
 }

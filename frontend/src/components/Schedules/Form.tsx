@@ -140,7 +140,7 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='subject_id'>Subject</label>
 							<select
 								{...register('subject_id')}
@@ -166,7 +166,7 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label>Curriculum Description</label>
 							<input
 								type='text'
@@ -175,7 +175,7 @@ const Form: FC<Props> = (props) => {
 								value={selected.subject ? `${selected.subject?.curriculum?.description}` : ''}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-4'>
+						<div className='form-group col-12 col-md-3'>
 							<label>School Year</label>
 							<input
 								type='text'
@@ -224,6 +224,10 @@ const Form: FC<Props> = (props) => {
 								className='form-control'
 								value={selected.course ? selected.course.description : ''}
 							/>
+						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label>Course Code</label>
+							<input type='text' disabled className='form-control' value={selected.course ? selected.course.code : ''} />
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Year Level</label>
@@ -358,6 +362,8 @@ const Form: FC<Props> = (props) => {
 																	maxTime:
 																		day.end_time.length > 0
 																			? dayjs(day.end_time, 'HH:mm:ss').toDate()
+																			: selected.teacher
+																			? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate()
 																			: undefined,
 																}}
 																value={

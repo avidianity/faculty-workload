@@ -23,11 +23,6 @@ class CreateSchedulesTable extends Migration
             $table->foreignIdFor(new Subject())->constrained();
             $table->foreignIdFor(new Room())->constrained();
             $table->foreignIdFor(new Course())->constrained();
-            $table->enum('semester', [
-                '1st Semester',
-                '2nd Semester',
-                'Summer',
-            ]);
             $table->unsignedTinyInteger('slot');
             $table->unsignedTinyInteger('section');
             $table->timestamps();

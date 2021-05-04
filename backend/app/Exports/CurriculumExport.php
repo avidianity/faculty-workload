@@ -19,13 +19,13 @@ class CurriculumExport implements FromCollection, WithHeadings, Responsable
      */
     public function collection()
     {
-        return Curriculum::all();
+        return Curriculum::all()->toExportable();
     }
 
     public function headings(): array
     {
         $collection = $this->collection();
 
-        return array_keys($collection->count() > 0 ? $collection->first()->toArray() : []);
+        return array_keys($collection->count() > 0 ? $collection->first() : []);
     }
 }
