@@ -16,7 +16,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return Schedule::with('teacher', 'room', 'subject.curriculum', 'course', 'days')->get();
+        return Schedule::with('teacher', 'room', 'subject.curriculum', 'days', 'subject.course')->get();
     }
 
     /**
@@ -48,7 +48,7 @@ class ScheduleController extends Controller
      */
     public function show(Schedule $schedule)
     {
-        $schedule->load('teacher', 'room', 'subject.curriculum', 'course', 'days');
+        $schedule->load('teacher', 'room', 'subject.curriculum', 'days', 'subject.course');
         return $schedule;
     }
 
@@ -73,7 +73,7 @@ class ScheduleController extends Controller
 
         $schedule->days()->createMany($data['days']);
 
-        $schedule->load('teacher', 'room', 'subject.curriculum', 'course', 'days');
+        $schedule->load('teacher', 'room', 'subject.curriculum', 'days');
 
         return $schedule;
     }
@@ -99,7 +99,6 @@ class ScheduleController extends Controller
             'teacher_id',
             'subject_id',
             'room_id',
-            'course_id',
             'section',
         ];
 
@@ -114,7 +113,7 @@ class ScheduleController extends Controller
         $hasDay = false;
 
         foreach ($data['days'] as $day) {
-            if (Schedule::whereHas('days', function (Builder $builder) use ($day) {
+            if ($builder->whereHas('days', function (Builder $builder) use ($day) {
                 return $builder->where('day', $day['day'])
                     ->where('start_time', '>=', $day['start_time'])
                     ->where('end_time', '>=', $day['end_time']);

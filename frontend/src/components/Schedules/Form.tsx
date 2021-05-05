@@ -10,10 +10,8 @@ import { useQuery } from 'react-query';
 import { roomService } from '../../services/room.service';
 import { subjectService } from '../../services/subject.service';
 import { teacherService } from '../../services/teacher.service';
-import { courseService } from '../../services/course.service';
 import { SubjectContract } from '../../contracts/subject.contract';
 import { TeacherContract } from '../../contracts/teacher.contract';
-import { CourseContract } from '../../contracts/course.contract';
 
 type Props = {};
 
@@ -23,7 +21,6 @@ type Inputs = {
 	teacher_id: number;
 	subject_id: number;
 	room_id: number;
-	course_id: number;
 	semester: string;
 	slot: number;
 	section: number;
@@ -33,7 +30,6 @@ type Inputs = {
 type Selected = {
 	subject?: SubjectContract;
 	teacher?: TeacherContract;
-	course?: CourseContract;
 };
 
 const Form: FC<Props> = (props) => {
@@ -41,7 +37,6 @@ const Form: FC<Props> = (props) => {
 	const { data: rooms } = useQuery('rooms', () => roomService.fetch());
 	const { data: subjects } = useQuery('subjects', () => subjectService.fetch());
 	const { data: teachers } = useQuery('teachers', () => teacherService.fetch());
-	const { data: courses } = useQuery('courses', () => courseService.fetch());
 	const [days, setDays] = useArray<Day>([
 		{
 			day: 'Monday',
@@ -191,30 +186,19 @@ const Form: FC<Props> = (props) => {
 							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
-							<label htmlFor='course_id'>Course</label>
-							<select
-								{...register('course_id')}
-								name='course_id'
-								id='course_id'
+							<label>Course</label>
+							<input
+								type='text'
+								disabled
 								className='form-control'
-								onChange={(e) => {
-									const course = courses?.find((course) => course.id === e.target.value.toNumber());
-
-									if (course) {
-										setSelected({ ...selected, course });
-									} else {
-										delete selected.course;
-										setSelected({ ...selected });
-									}
-								}}
-								disabled={processing}>
-								<option> -- Select -- </option>
-								{courses?.map((course, index) => (
-									<option value={course.id} key={index}>
-										{course.code}
-									</option>
-								))}
-							</select>
+								value={
+									selected.subject
+										? `${dayjs(selected.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
+												selected.subject?.curriculum?.end_school_date
+										  ).format('YYYY')}`
+										: ''
+								}
+							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Course Description</label>
@@ -222,12 +206,17 @@ const Form: FC<Props> = (props) => {
 								type='text'
 								disabled
 								className='form-control'
-								value={selected.course ? selected.course.description : ''}
+								value={selected.subject ? selected.subject.course?.description : ''}
 							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Course Code</label>
-							<input type='text' disabled className='form-control' value={selected.course ? selected.course.code : ''} />
+							<input
+								type='text'
+								disabled
+								className='form-control'
+								value={selected.subject ? selected.subject.course?.code : ''}
+							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Year Level</label>

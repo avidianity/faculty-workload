@@ -13,7 +13,6 @@ class Schedule extends Model
         'teacher_id',
         'subject_id',
         'room_id',
-        'course_id',
         'slot',
         'section',
     ];
@@ -31,11 +30,6 @@ class Schedule extends Model
     public function room()
     {
         return $this->belongsTo(Room::class);
-    }
-
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
     }
 
     public function days()
