@@ -30,7 +30,7 @@ class ScheduleController extends Controller
         $data = $request->all();
 
         if (!$this->validateSchedule($data)) {
-            return response(['message' => 'Schedule already exists.']);
+            return response(['message' => 'Schedule already exists.'], 400);
         }
 
         $schedule = Schedule::create($data);
@@ -64,7 +64,7 @@ class ScheduleController extends Controller
         $data = $request->all();
 
         if (!$this->validateSchedule($data, ['id' => $schedule->id])) {
-            return response(['message' => 'Schedule already exists.']);
+            return response(['message' => 'Schedule already exists.'], 400);
         }
 
         $schedule->update($data);
@@ -111,21 +111,18 @@ class ScheduleController extends Controller
             $builder = $builder->where($field, '!=', $exception);
         }
 
+        $hasDay = false;
+
         foreach ($data['days'] as $day) {
-            $builder = $builder->whereHas('days', function (Builder $builder) use ($day) {
+            if (Schedule::whereHas('days', function (Builder $builder) use ($day) {
                 return $builder->where('day', $day['day'])
                     ->where('start_time', '>=', $day['start_time'])
-                    ->where('end_time', '<=', $day['end_time']);
-            });
+                    ->where('end_time', '>=', $day['end_time']);
+            })->count() !== 0) {
+                $hasDay = true;
+            }
         }
 
-
-
-        return $builder->count() === 0 && Teacher::whereId($data['teacher_id'])
-            ->whereHas('schedules', function (Builder $builder) use ($data) {
-                return $builder
-                    ->where('start_time', '>=', $data['start_time'])
-                    ->where('end_time', '<=', $data['end_time']);
-            })->count() === 0;
+        return $builder->count() === 0 && !$hasDay;
     }
 }
