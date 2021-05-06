@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
+import download from 'downloadjs';
 import React, { FC, useEffect } from 'react';
 import { TeacherContract } from '../contracts/teacher.contract';
 import { NavbarBus } from '../events';
@@ -35,13 +36,31 @@ const Analytics: FC<Props> = (props) => {
 		<div className='container pt-5'>
 			<div className='card shadow'>
 				<div className='card-header'>
-					<h4 className='card-title'>
+					<h4 className='card-title align-self-center mt-1'>
 						{teacher ? (
 							<>
 								{teacher?.last_name}, {teacher?.first_name} {teacher?.middle_name || ''} ({teacher?.account_number})
 							</>
 						) : null}
 					</h4>
+					{teacher ? (
+						<a
+							className='btn btn-info btn-sm ml-auto align-self-center'
+							href={`teachers/export/${teacher.id}`}
+							onClick={async (e) => {
+								e.preventDefault();
+								const url = e.currentTarget.getAttribute('href');
+								try {
+									const { data, headers } = await axios.get<Blob>(url || '', { responseType: 'blob' });
+									download(data, `${teacher.last_name}, ${teacher.first_name}.xlsx`, headers['content-type']);
+								} catch (error) {
+									console.log(error.toJSON());
+									toastr.error('Unable to export. Please try again later.');
+								}
+							}}>
+							<i className='fas fa-file-export'></i>
+						</a>
+					) : null}
 				</div>
 				<div className='card-body table-responsive'>
 					<table className='table table-sm table-bordered'>

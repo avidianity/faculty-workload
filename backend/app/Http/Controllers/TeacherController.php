@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TeacherScheduleExport;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 
@@ -102,5 +103,10 @@ class TeacherController extends Controller
                 'schedules.room',
                 'schedules.days',
             ])->get();
+    }
+
+    public function export(Teacher $teacher)
+    {
+        return new TeacherScheduleExport($teacher);
     }
 }
