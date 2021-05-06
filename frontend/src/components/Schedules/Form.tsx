@@ -68,6 +68,18 @@ const Form: FC<Props> = (props) => {
 			end_time: '',
 			checked: false,
 		},
+		{
+			day: 'Saturday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
+		{
+			day: 'Sunday',
+			start_time: '',
+			end_time: '',
+			checked: false,
+		},
 	]);
 	const [selected, setSelected] = useState<Selected>({});
 	const { register, handleSubmit, setValue } = useForm<Inputs>();

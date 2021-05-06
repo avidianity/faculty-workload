@@ -57,7 +57,12 @@ const List: FC<Props> = (props) => {
 					school_year: `${dayjs(schedule.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
 						schedule.subject?.curriculum?.end_school_date
 					).format('YYYY')}`,
-					days: schedule.days.map((day) => day.day).join(', '),
+					days: schedule.days.map((day) => (
+						<div style={{ width: '250px' }}>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
+							day.end_time,
+							'HH:mm:ss'
+						).format('hh:mm A')}`}</div>
+					)),
 					actions: (
 						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
 							<Link to={url(`${schedule.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
@@ -95,10 +100,6 @@ const List: FC<Props> = (props) => {
 				{
 					title: 'Course',
 					accessor: 'course_code',
-				},
-				{
-					title: 'Course Description',
-					accessor: 'course_description',
 				},
 				{
 					title: 'Year Level',

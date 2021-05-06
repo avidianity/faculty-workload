@@ -98,8 +98,8 @@ class TeacherController extends Controller
         return Teacher::search($request->input('query'))
             ->with([
                 'schedules.subject.curriculum',
+                'schedules.subject.course',
                 'schedules.room',
-                'schedules.course',
                 'schedules.days',
             ])->get();
     }

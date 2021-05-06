@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         /**
-         * @return \Illuminate\Database\Eloquent\Collection
+         * @return static
          */
         Collection::macro('toExportable', function () {
             $data = $this->map(function (Model $model) {

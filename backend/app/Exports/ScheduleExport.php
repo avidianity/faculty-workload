@@ -19,12 +19,12 @@ class ScheduleExport implements FromCollection, WithHeadings, Responsable
      */
     public function collection()
     {
-        return Schedule::with('teacher', 'room', 'subject.curriculum', 'course', 'days')
+        return Schedule::with('teacher', 'room', 'subject.curriculum', 'subject.course', 'days')
             ->get()
             ->toExportable()
             ->map(function (array $data) {
+                $data['course'] = $data['subject']['course']['code'];
                 $data['subject'] = $data['subject']['code'];
-                $data['course'] = $data['course']['code'];
                 $data['days'] = collect($data['days'])->map(function ($day) {
                     return $day['day'];
                 })->join(', ');

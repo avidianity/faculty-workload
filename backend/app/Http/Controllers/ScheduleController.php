@@ -103,7 +103,7 @@ class ScheduleController extends Controller
         ];
 
         foreach ($fields as $field) {
-            $builder = $builder->where($field, $data[$field]);
+            $builder = $builder->orWhere($field, $data[$field]);
         }
 
         foreach ($exceptions as $field => $exception) {

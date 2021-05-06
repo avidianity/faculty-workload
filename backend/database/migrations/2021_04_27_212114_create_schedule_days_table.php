@@ -17,7 +17,7 @@ class CreateScheduleDaysTable extends Migration
         Schema::create('schedule_days', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(new Schedule())->constrained();
-            $table->enum('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+            $table->enum('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();
