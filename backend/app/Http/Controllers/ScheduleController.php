@@ -93,7 +93,6 @@ class ScheduleController extends Controller
 
     protected function validateSchedule($data, $exceptions = [])
     {
-        $builder = new Schedule();
 
         $fields = [
             'teacher_id',
@@ -103,25 +102,27 @@ class ScheduleController extends Controller
         ];
 
         foreach ($fields as $field) {
-            $builder = $builder->orWhere($field, $data[$field]);
-        }
+            $builder = new Schedule();
 
-        foreach ($exceptions as $field => $exception) {
-            $builder = $builder->where($field, '!=', $exception);
-        }
+            foreach ($exceptions as $field => $exception) {
+                $builder = $builder->where($field, '!=', $exception);
+            }
 
-        $hasDay = false;
+            foreach ($data['days'] as $day) {
+                $count = $builder
+                    ->where($field, $data[$field])
+                    ->whereHas('days', function (Builder $builder) use ($day) {
+                        return $builder->where('day', $day['day'])
+                            ->where('start_time', '>=', $day['start_time'])
+                            ->where('end_time', '<=', $day['end_time']);
+                    })->count();
 
-        foreach ($data['days'] as $day) {
-            if ($builder->whereHas('days', function (Builder $builder) use ($day) {
-                return $builder->where('day', $day['day'])
-                    ->where('start_time', '>=', $day['start_time'])
-                    ->where('end_time', '>=', $day['end_time']);
-            })->count() !== 0) {
-                $hasDay = true;
+                if ($count !== 0) {
+                    return false;
+                }
             }
         }
 
-        return $builder->count() === 0 && !$hasDay;
+        return true;
     }
 }
