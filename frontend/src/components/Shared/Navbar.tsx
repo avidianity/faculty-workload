@@ -93,6 +93,7 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 
 								NavbarBus.dispatch('search', value);
 							}}>
+							<option> -- Select -- </option>
 							{teachers?.map((teacher, index) => (
 								<option
 									value={`${teacher.first_name}`}
