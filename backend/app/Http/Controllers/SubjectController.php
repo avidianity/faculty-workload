@@ -15,7 +15,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        return Subject::with('course', 'curriculum')->get();
+        return Subject::with('course', 'curriculum', 'schedules')->get();
     }
 
     /**
@@ -45,7 +45,7 @@ class SubjectController extends Controller
      */
     public function show(Subject $subject)
     {
-        $subject->load('course', 'curriculum');
+        $subject->load('course', 'curriculum', 'schedules');
         return $subject;
     }
 
@@ -102,6 +102,24 @@ class SubjectController extends Controller
             $builder = $builder->where($field, '!=', $exception);
         }
 
-        return $builder->count() === 0;
+        $builder2 = new Subject();
+
+        $fields = [
+            'semester',
+            'course_id',
+            'code',
+            'description',
+            'section',
+        ];
+
+        foreach ($fields as $field) {
+            $builder2 = $builder2->where($field, $data[$field]);
+        }
+
+        foreach ($exceptions as $field => $exception) {
+            $builder2 = $builder2->where($field, '!=', $exception);
+        }
+
+        return $builder->count() === 0 && $builder2->count() === 0;
     }
 }

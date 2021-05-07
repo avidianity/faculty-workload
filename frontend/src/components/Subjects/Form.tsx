@@ -25,6 +25,7 @@ type Inputs = {
 	curriculum_id: number;
 	year: string;
 	course_id: number;
+	section: number;
 };
 
 const Form: FC<Props> = (props) => {
@@ -82,8 +83,8 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-6'>
-							<label htmlFor='curriculum_id'>Curricula</label>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='curriculum_id'>Curriculum</label>
 							<select {...register('curriculum_id')} name='curriculum_id' id='curriculum_id' className='form-control'>
 								<option> -- Select -- </option>
 								{curricula?.map((curriculum, index) => (
@@ -94,7 +95,7 @@ const Form: FC<Props> = (props) => {
 								))}
 							</select>
 						</div>
-						<div className='form-group col-12 col-md-6 col-lg-6'>
+						<div className='form-group col-12 col-md-4'>
 							<label htmlFor='prerequisites'>Prerequisites</label>
 							<input
 								type='text'
@@ -104,6 +105,10 @@ const Form: FC<Props> = (props) => {
 								className='form-control'
 								disabled={processing}
 							/>
+						</div>
+						<div className='form-group col-12 col-md-4'>
+							<label htmlFor='section'>Section</label>
+							<input {...register('section')} type='number' name='section' id='section' className='form-control' />
 						</div>
 						<div className='form-group col-12 col-md-6 col-lg-4'>
 							<label htmlFor='code'>Code</label>
@@ -174,7 +179,7 @@ const Form: FC<Props> = (props) => {
 							</select>
 						</div>
 						<div className='form-group col-12 col-md-4'>
-							<label htmlFor='course_id'>Course</label>
+							<label htmlFor='course_id'>Course Code</label>
 							<select {...register('course_id')} name='course_id' id='course_id' className='form-control'>
 								{coursesList?.map((course, index) => (
 									<option value={course.id} key={index}>

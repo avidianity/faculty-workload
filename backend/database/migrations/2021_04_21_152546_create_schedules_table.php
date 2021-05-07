@@ -23,7 +23,6 @@ class CreateSchedulesTable extends Migration
             $table->foreignIdFor(new Subject())->constrained();
             $table->foreignIdFor(new Room())->constrained();
             $table->unsignedTinyInteger('slot');
-            $table->unsignedTinyInteger('section');
             $table->timestamps();
         });
     }

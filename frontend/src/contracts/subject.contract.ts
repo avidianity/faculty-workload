@@ -1,6 +1,7 @@
 import { CourseContract } from './course.contract';
 import { CurriculumContract } from './curriculum.contract';
 import { ModelContract } from './model.contract';
+import { ScheduleContract } from './schedule.contract';
 
 export interface SubjectContract extends ModelContract {
 	uuid: string;
@@ -13,6 +14,8 @@ export interface SubjectContract extends ModelContract {
 	semester: string;
 	curriculum_id: number;
 	year: string;
+	section: number;
 	curriculum?: CurriculumContract;
 	course?: CourseContract;
+	schedules?: ScheduleContract[];
 }

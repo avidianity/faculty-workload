@@ -44,21 +44,27 @@ const List: FC<Props> = (props) => {
 			items={
 				items?.map((schedule) => ({
 					...schedule,
-					teacher: `${schedule.teacher?.last_name}, ${schedule.teacher?.first_name} ${schedule.teacher?.middle_name || ''}`,
+					teacher: (
+						<div style={{ minWidth: '200px' }}>{`${schedule.teacher?.last_name}, ${schedule.teacher?.first_name} ${
+							schedule.teacher?.middle_name || ''
+						}`}</div>
+					),
 					employment_status: `${schedule.teacher?.employment_status}`,
 					subject: schedule.subject?.code,
 					room: schedule.room?.code,
 					course_code: schedule.subject?.course?.code,
 					course_description: schedule.subject?.course?.description,
 					year_level: schedule.subject?.year,
-					section: schedule.section,
+					section: schedule.subject?.section,
 					semester: schedule.subject?.semester,
 					curriculum_description: `${schedule.subject?.curriculum?.description}`,
-					school_year: `${dayjs(schedule.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
-						schedule.subject?.curriculum?.end_school_date
-					).format('YYYY')}`,
+					school_year: (
+						<div style={{ minWidth: '100px' }}>{`${dayjs(schedule.subject?.curriculum?.start_school_date).format(
+							'YYYY'
+						)} - ${dayjs(schedule.subject?.curriculum?.end_school_date).format('YYYY')}`}</div>
+					),
 					days: schedule.days.map((day) => (
-						<div style={{ width: '250px' }}>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
+						<div style={{ minWidth: '225px' }}>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
 							day.end_time,
 							'HH:mm:ss'
 						).format('hh:mm A')}`}</div>

@@ -21,9 +21,10 @@ class CreateTeachersTable extends Migration
             $table->string('last_name');
             $table->string('email');
             $table->enum('employment_status', [
+                'Permanent',
                 'Part Time',
                 'Designee',
-                'Temporary Substitution',
+                'Temporary',
             ]);
             $table->time('availability_start');
             $table->time('availability_end');

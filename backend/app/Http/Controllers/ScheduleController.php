@@ -98,7 +98,6 @@ class ScheduleController extends Controller
             'teacher_id',
             'subject_id',
             'room_id',
-            'section',
         ];
 
         foreach ($fields as $field) {
@@ -108,13 +107,28 @@ class ScheduleController extends Controller
                 $builder = $builder->where($field, '!=', $exception);
             }
 
+            $teacher = Teacher::findOrFail($data['teacher_id']);
+
             foreach ($data['days'] as $day) {
+
+                $count = $teacher->schedules()
+                    ->whereHas('days', function (Builder $builder) use ($day) {
+                        return $builder->where('day', $day['day'])
+                            ->where('end_time', $day['start_time']);
+                    })->count();
+
+                if ($count > 0) {
+                    return false;
+                }
+
                 $count = $builder
                     ->where($field, $data[$field])
                     ->whereHas('days', function (Builder $builder) use ($day) {
                         return $builder->where('day', $day['day'])
-                            ->where('start_time', '>=', $day['start_time'])
-                            ->where('end_time', '<=', $day['end_time']);
+                            ->where(function (Builder $query) use ($day) {
+                                return $query->orWhere('start_time', '>=', $day['start_time'])
+                                    ->orWhere('end_time', '<=', $day['end_time']);
+                            });
                     })->count();
 
                 if ($count !== 0) {

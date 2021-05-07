@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { FC, useEffect, useState } from 'react';
-import { Asker, outIf } from '../../helpers';
+import { Asker, outIf, toBool } from '../../helpers';
 import { History } from 'history';
 import { routes } from '../../routes';
 import { State } from '../../libraries/State';
 import { NavbarBus } from '../../events';
+import { useQuery } from 'react-query';
+import { teacherService } from '../../services/teacher.service';
 
 type Props = {
 	toggleSidebar: () => void;
@@ -16,6 +18,7 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 	const [showSearch, setShowSearch] = useState(false);
 	const [search, setSearch] = useState('');
 	const state = State.getInstance();
+	const { data: teachers } = useQuery('teachers', () => teacherService.fetch());
 
 	const logout = async () => {
 		if (await Asker.notice('Are you sure you want to logout?')) {
@@ -74,7 +77,7 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 				</span>
 			</div>
 			<div className='app-header__content'>
-				<div className={`app-header-left ${outIf(!showSearch, 'd-none')}`}>
+				<div className={`app-header-left ${outIf(!showSearch || toBool(teachers && teachers.length === 0), 'd-none')}`}>
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
@@ -83,21 +86,24 @@ const Navbar: FC<Props> = ({ toggleSidebar, history, isActive }) => {
 								setSearch('');
 							}
 						}}>
-						<div className='search-wrapper'>
-							<div className='input-holder'>
-								<input
-									type='text'
-									className='search-input'
-									placeholder='Type to search'
-									value={search}
-									onChange={(e) => setSearch(e.target.value)}
-								/>
-								<button type='submit' className='search-icon'>
-									<span></span>
-								</button>
-							</div>
-							<button className='close'></button>
-						</div>
+						<select
+							className='form-control'
+							onChange={(e) => {
+								const value = e.target.value;
+
+								NavbarBus.dispatch('search', value);
+							}}>
+							{teachers?.map((teacher, index) => (
+								<option
+									value={`${teacher.first_name}`}
+									key={index}
+									onClick={() => {
+										NavbarBus.dispatch('search', teacher.first_name);
+									}}>
+									{teacher.last_name}, {teacher.first_name}
+								</option>
+							))}
+						</select>
 					</form>
 				</div>
 				<div className='app-header-right'>

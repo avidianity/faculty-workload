@@ -14,7 +14,7 @@ const Analytics: FC<Props> = (props) => {
 
 	const searchTeacher = async (keyword: string) => {
 		try {
-			const { data } = await axios.get<TeacherContract[]>(`/teachers/search?query=${keyword}`);
+			const { data } = await axios.get<TeacherContract[]>(`/teachers/search?query=${encodeURIComponent(keyword.toLowerCase())}`);
 			setTeacher(data[0]);
 		} catch (error) {
 			handleError(error);

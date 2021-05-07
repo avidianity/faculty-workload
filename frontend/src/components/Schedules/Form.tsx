@@ -23,7 +23,6 @@ type Inputs = {
 	room_id: number;
 	semester: string;
 	slot: number;
-	section: number;
 	days: Day[];
 };
 
@@ -147,7 +146,7 @@ const Form: FC<Props> = (props) => {
 				</div>
 				<div className='card-body'>
 					<form className='form-row' onSubmit={handleSubmit(submit)}>
-						<div className='form-group col-12 col-md-3'>
+						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='subject_id'>Subject</label>
 							<select
 								{...register('subject_id')}
@@ -166,21 +165,15 @@ const Form: FC<Props> = (props) => {
 								}}
 								disabled={processing}>
 								<option> -- Select -- </option>
-								{subjects?.map((subject, index) => (
-									<option value={subject.id} key={index}>
-										{subject.description} | {subject.code} {subject.course?.code}
-									</option>
-								))}
+								{subjects
+									?.filter((subject) => subject.schedules && subject.schedules.length === 0)
+									.map((subject, index) => (
+										<option value={subject.id} key={index}>
+											{subject.description} | {subject.code} {subject.course?.code} -{' '}
+											{subject.curriculum?.description}
+										</option>
+									))}
 							</select>
-						</div>
-						<div className='form-group col-12 col-md-3'>
-							<label>Curriculum Description</label>
-							<input
-								type='text'
-								disabled
-								className='form-control'
-								value={selected.subject ? `${selected.subject?.curriculum?.description}` : ''}
-							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>School Year</label>
@@ -236,7 +229,13 @@ const Form: FC<Props> = (props) => {
 						</div>
 						<div className='form-group col-12 col-md-3'>
 							<label>Section</label>
-							<input {...register('section')} type='number' name='section' className='form-control' />
+							<input
+								type='text'
+								name='section'
+								disabled
+								className='form-control'
+								value={selected.subject ? selected.subject.section : ''}
+							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>
 							<label>Semester</label>
@@ -244,7 +243,7 @@ const Form: FC<Props> = (props) => {
 								type='text'
 								disabled
 								className='form-control'
-								value={selected.subject ? selected.subject?.semester : ''}
+								value={selected.subject ? selected.subject.semester : ''}
 							/>
 						</div>
 						<div className='form-group col-12 col-md-4'>
