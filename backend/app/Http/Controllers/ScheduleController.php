@@ -110,17 +110,6 @@ class ScheduleController extends Controller
             $teacher = Teacher::findOrFail($data['teacher_id']);
 
             foreach ($data['days'] as $day) {
-
-                $count = $teacher->schedules()
-                    ->whereHas('days', function (Builder $builder) use ($day) {
-                        return $builder->where('day', $day['day'])
-                            ->where('end_time', $day['start_time']);
-                    })->count();
-
-                if ($count > 0) {
-                    return false;
-                }
-
                 $count = $builder
                     ->where($field, $data[$field])
                     ->whereHas('days', function (Builder $builder) use ($day) {
