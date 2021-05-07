@@ -18,8 +18,10 @@ class CreateScheduleDaysTable extends Migration
             $table->id();
             $table->foreignIdFor(new Schedule())->constrained();
             $table->enum('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->time('start_time_am');
+            $table->time('end_time_am');
+            $table->time('start_time_pm');
+            $table->time('end_time_pm');
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();

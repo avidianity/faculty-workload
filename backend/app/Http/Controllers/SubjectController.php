@@ -90,6 +90,7 @@ class SubjectController extends Controller
             'semester',
             'year',
             'course_id',
+            'curriculum_id',
             'code',
             'description',
         ];

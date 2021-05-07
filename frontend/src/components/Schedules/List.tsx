@@ -64,10 +64,11 @@ const List: FC<Props> = (props) => {
 						)} - ${dayjs(schedule.subject?.curriculum?.end_school_date).format('YYYY')}`}</div>
 					),
 					days: schedule.days.map((day) => (
-						<div style={{ minWidth: '225px' }}>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
-							day.end_time,
-							'HH:mm:ss'
-						).format('hh:mm A')}`}</div>
+						<div style={{ minWidth: '250px' }}>{`${day.day} | ${dayjs(day.start_time_am, 'HH:mm:ss').format(
+							'hh:mm'
+						)}AM - ${dayjs(day.end_time_am, 'HH:mm:ss').format('hh:mm')}AM | ${dayjs(day.start_time_pm, 'HH:mm:ss').format(
+							'hh:mm'
+						)}PM - ${dayjs(day.end_time_pm, 'HH:mm:ss').format('hh:mm')}PM`}</div>
 					)),
 					actions: (
 						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>

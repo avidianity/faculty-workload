@@ -15,7 +15,14 @@ import { TeacherContract } from '../../contracts/teacher.contract';
 
 type Props = {};
 
-type Day = { day: string; start_time: string; end_time: string; checked: boolean };
+type Day = {
+	day: string;
+	start_time_am: string;
+	end_time_am: string;
+	start_time_pm: string;
+	end_time_pm: string;
+	checked: boolean;
+};
 
 type Inputs = {
 	teacher_id: number;
@@ -39,44 +46,58 @@ const Form: FC<Props> = (props) => {
 	const [days, setDays] = useArray<Day>([
 		{
 			day: 'Monday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 		{
 			day: 'Tuesday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 		{
 			day: 'Wednesday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 		{
 			day: 'Thursday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 		{
 			day: 'Friday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 		{
 			day: 'Saturday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 		{
 			day: 'Sunday',
-			start_time: '',
-			end_time: '',
+			start_time_am: '',
+			end_time_am: '',
+			start_time_pm: '',
+			end_time_pm: '',
 			checked: false,
 		},
 	]);
@@ -117,8 +138,10 @@ const Form: FC<Props> = (props) => {
 					const scheduleDay = schedule.days.find((scheduleDay) => scheduleDay.day === day.day);
 					if (scheduleDay !== undefined) {
 						day.checked = true;
-						day.start_time = scheduleDay.start_time;
-						day.end_time = scheduleDay.end_time;
+						day.start_time_am = scheduleDay.start_time_am;
+						day.end_time_am = scheduleDay.end_time_am;
+						day.start_time_pm = scheduleDay.start_time_pm;
+						day.end_time_pm = scheduleDay.end_time_pm;
 					}
 					return day;
 				}),
@@ -310,9 +333,20 @@ const Form: FC<Props> = (props) => {
 									<table className='table'>
 										<thead>
 											<tr>
-												<th>Day</th>
-												<th>Start Time</th>
-												<th>End Time</th>
+												<th></th>
+												<th className='text-center' colSpan={2}>
+													AM
+												</th>
+												<th className='text-center' colSpan={2}>
+													PM
+												</th>
+											</tr>
+											<tr>
+												<th className='text-center'>Day</th>
+												<th className='text-center'>Start Time</th>
+												<th className='text-center'>End Time</th>
+												<th className='text-center'>Start Time</th>
+												<th className='text-center'>End Time</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -349,37 +383,27 @@ const Form: FC<Props> = (props) => {
 														/>
 														{day.checked ? (
 															<Flatpickr
+																value={
+																	day.start_time_am.length > 0
+																		? dayjs(day.start_time_am, 'HH:mm:ss').toDate()
+																		: undefined
+																}
 																options={{
 																	altFormat: 'G:i K',
 																	mode: 'time',
 																	altInput: true,
-																	defaultDate: selected.teacher
-																		? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate()
-																		: undefined,
-																	minTime: selected.teacher
-																		? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate()
-																		: undefined,
-																	maxTime:
-																		day.end_time.length > 0
-																			? dayjs(day.end_time, 'HH:mm:ss').toDate()
-																			: selected.teacher
-																			? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate()
-																			: undefined,
+																	minTime: dayjs('00:00:00', 'HH:mm:ss').toDate(),
+																	maxTime: dayjs('12:00:00', 'HH:mm:ss').toDate(),
 																}}
-																value={
-																	day.start_time.length > 0
-																		? dayjs(day.start_time, 'HH:mm:ss').toDate()
-																		: undefined
-																}
+																className={`form-control`}
+																disabled={processing}
 																onChange={(dates) => {
 																	if (dates.length > 0) {
-																		day.start_time = dayjs(dates[0]).format('HH:mm:ss');
+																		day.start_time_am = dayjs(dates[0]).format('HH:mm:ss');
 																		days.splice(index, 1, day);
 																		setDays([...days]);
 																	}
 																}}
-																className={`form-control`}
-																disabled={processing}
 															/>
 														) : null}
 													</td>
@@ -391,42 +415,97 @@ const Form: FC<Props> = (props) => {
 														/>
 														{day.checked ? (
 															<Flatpickr
+																value={
+																	day.end_time_am.length > 0
+																		? dayjs(day.end_time_am, 'HH:mm:ss').toDate()
+																		: undefined
+																}
 																options={{
 																	altFormat: 'G:i K',
 																	mode: 'time',
 																	altInput: true,
-																	defaultDate: selected.teacher
-																		? dayjs(selected.teacher.availability_start, 'HH:mm:ss').toDate()
-																		: undefined,
 																	minTime:
-																		day.start_time.length > 0
-																			? dayjs(day.start_time, 'HH:mm:ss').toDate()
-																			: undefined,
-																	maxTime: selected.teacher
-																		? dayjs(selected.teacher.availability_end, 'HH:mm:ss').toDate()
-																		: undefined,
-																}}
-																value={
-																	day.end_time.length > 0
-																		? dayjs(day.end_time, 'HH:mm:ss').toDate()
-																		: undefined
-																}
-																onChange={(dates) => {
-																	if (
-																		dates.length > 0 &&
-																		dayjs(dates[0]).diff(dayjs(day.start_time, 'HH:mm:ss'), 'hours') <=
-																			6
-																	) {
-																		console.log('valid');
-																		day.end_time = dayjs(dates[0]).format('HH:mm:ss');
-																		days.splice(index, 1, day);
-																		setDays([...days]);
-																	} else {
-																		setDays([...days]);
-																	}
+																		day.start_time_am.length > 0
+																			? dayjs(day.start_time_am, 'HH:mm:ss').toDate()
+																			: dayjs('00:00:00', 'HH:mm:ss').toDate(),
+																	maxTime: dayjs('12:00:00', 'HH:mm:ss').toDate(),
 																}}
 																className={`form-control`}
 																disabled={processing}
+																onChange={(dates) => {
+																	if (dates.length > 0) {
+																		day.end_time_am = dayjs(dates[0]).format('HH:mm:ss');
+																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	}
+																}}
+															/>
+														) : null}
+													</td>
+													<td>
+														<input
+															type='text'
+															disabled
+															className={`form-control ${outIf(day.checked, 'd-none')}`}
+														/>
+														{day.checked ? (
+															<Flatpickr
+																value={
+																	day.start_time_am.length > 0
+																		? dayjs(day.start_time_pm, 'HH:mm:ss').toDate()
+																		: undefined
+																}
+																options={{
+																	altFormat: 'G:i K',
+																	mode: 'time',
+																	altInput: true,
+																	minTime: dayjs('12:00:00', 'HH:mm:ss').toDate(),
+																	maxTime: dayjs('24:00:00', 'HH:mm:ss').toDate(),
+																}}
+																className={`form-control`}
+																disabled={processing}
+																onChange={(dates) => {
+																	if (dates.length > 0) {
+																		day.start_time_pm = dayjs(dates[0]).format('HH:mm:ss');
+																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	}
+																}}
+															/>
+														) : null}
+													</td>
+													<td>
+														<input
+															type='text'
+															disabled
+															className={`form-control ${outIf(day.checked, 'd-none')}`}
+														/>
+														{day.checked ? (
+															<Flatpickr
+																value={
+																	day.end_time_am.length > 0
+																		? dayjs(day.end_time_pm, 'HH:mm:ss').toDate()
+																		: undefined
+																}
+																options={{
+																	altFormat: 'G:i K',
+																	mode: 'time',
+																	altInput: true,
+																	minTime:
+																		day.start_time_am.length > 0
+																			? dayjs(day.start_time_pm, 'HH:mm:ss').toDate()
+																			: dayjs('12:00:00', 'HH:mm:ss').toDate(),
+																	maxTime: dayjs('24:00:00', 'HH:mm:ss').toDate(),
+																}}
+																className={`form-control`}
+																disabled={processing}
+																onChange={(dates) => {
+																	if (dates.length > 0) {
+																		day.end_time_pm = dayjs(dates[0]).format('HH:mm:ss');
+																		days.splice(index, 1, day);
+																		setDays([...days]);
+																	}
+																}}
 															/>
 														) : null}
 													</td>

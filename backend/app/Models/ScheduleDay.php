@@ -9,7 +9,13 @@ class ScheduleDay extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['day', 'start_time', 'end_time'];
+    protected $fillable = [
+        'day',
+        'start_time_am',
+        'end_time_am',
+        'start_time_pm',
+        'end_time_pm',
+    ];
 
     public function schedule()
     {

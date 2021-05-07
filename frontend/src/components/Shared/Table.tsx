@@ -11,9 +11,10 @@ type Props = {
 	loading: boolean;
 	onRefresh: () => void;
 	items: any[];
+	misc?: any;
 };
 
-const Table: FC<Props> = ({ columns, title, buttons, casts, loading, onRefresh, items }) => {
+const Table: FC<Props> = ({ columns, title, buttons, casts, loading, onRefresh, items, misc }) => {
 	const id = v4();
 	const [datatable, setDatatable] = useNullable<DataTables.Api>();
 
@@ -45,18 +46,25 @@ const Table: FC<Props> = ({ columns, title, buttons, casts, loading, onRefresh, 
 	return (
 		<div className='container-fluid'>
 			<div className='card shadow'>
-				<div className='card-header d-flex align-items-center'>
-					<h4 className='card-title'>{title}</h4>
-					<button
-						className='btn btn-info btn-sm ml-auto'
-						disabled={loading}
-						onClick={(e) => {
-							e.preventDefault();
-							onRefresh();
-						}}>
-						<i className={`fas fa-sync-alt ${outIf(loading, 'fa-spin')}`}></i>
-					</button>
-					{buttons}
+				<div className='card-header' style={{ height: '10rem' }}>
+					<div className='container-fluid pb-4'>
+						<div className='row'>
+							<div className='col-12 d-flex align-items-center'>
+								<h4 className='card-title'>{title}</h4>
+								<button
+									className='btn btn-info btn-sm ml-auto'
+									disabled={loading}
+									onClick={(e) => {
+										e.preventDefault();
+										onRefresh();
+									}}>
+									<i className={`fas fa-sync-alt ${outIf(loading, 'fa-spin')}`}></i>
+								</button>
+								{buttons}
+							</div>
+							{misc ? <div className='col-12'>{misc}</div> : null}
+						</div>
+					</div>
 				</div>
 				<div className={`card-body table-responsive`}>
 					<table id={id} className='table table-hover'>

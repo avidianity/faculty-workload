@@ -93,39 +93,33 @@ class ScheduleController extends Controller
 
     protected function validateSchedule($data, $exceptions = [])
     {
+        $builder = new Schedule();
 
         $fields = [
             'teacher_id',
             'subject_id',
             'room_id',
+            'slot',
         ];
 
-        foreach ($fields as $field) {
-            $builder = new Schedule();
-
-            foreach ($exceptions as $field => $exception) {
-                $builder = $builder->where($field, '!=', $exception);
-            }
-
-            $teacher = Teacher::findOrFail($data['teacher_id']);
-
-            foreach ($data['days'] as $day) {
-                $count = $builder
-                    ->where($field, $data[$field])
-                    ->whereHas('days', function (Builder $builder) use ($day) {
-                        return $builder->where('day', $day['day'])
-                            ->where(function (Builder $query) use ($day) {
-                                return $query->orWhere('start_time', '>=', $day['start_time'])
-                                    ->orWhere('end_time', '<=', $day['end_time']);
-                            });
-                    })->count();
-
-                if ($count !== 0) {
-                    return false;
-                }
-            }
+        foreach ($exceptions as $field => $exception) {
+            $builder = $builder->where($field, '!=', $exception);
         }
 
-        return true;
+        foreach ($fields as $field) {
+            $builder = $builder->where($field, $data[$field]);
+        }
+
+        foreach ($data['days'] as $day) {
+            $builder = $builder->whereHas('days', function (Builder $builder) use ($day) {
+                return $builder->where('day', $day['day'])
+                    ->where('start_time_am', '>=', $day['start_time_am'])
+                    ->where('end_time_am', '<=', $day['end_time_am'])
+                    ->where('start_time_pm', '>=', $day['start_time_pm'])
+                    ->where('end_time_pm', '<=', $day['end_time_pm']);
+            });
+        }
+
+        return $builder->count() === 0;
     }
 }

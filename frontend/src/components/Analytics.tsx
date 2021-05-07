@@ -86,10 +86,13 @@ const Analytics: FC<Props> = (props) => {
 									<td className='text-center'>{schedule.subject?.units}</td>
 									<td className='text-center'>
 										{schedule.days.map((day) => (
-											<div>{`${day.day} | ${dayjs(day.start_time, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
-												day.end_time,
+											<div>{`${day.day} | ${dayjs(day.start_time_am, 'HH:mm:ss').format('hh:mm')}AM - ${dayjs(
+												day.end_time_am,
 												'HH:mm:ss'
-											).format('hh:mm A')}`}</div>
+											).format('hh:mm')}AM - ${dayjs(day.start_time_pm, 'HH:mm:ss').format('hh:mm')}PM - ${dayjs(
+												day.end_time_pm,
+												'HH:mm:ss'
+											).format('hh:mm')}PM`}</div>
 										))}
 									</td>
 								</tr>
