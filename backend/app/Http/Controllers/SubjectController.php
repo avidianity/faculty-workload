@@ -111,6 +111,7 @@ class SubjectController extends Controller
             'code',
             'description',
             'section',
+            'code',
         ];
 
         foreach ($fields as $field) {
