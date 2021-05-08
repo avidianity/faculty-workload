@@ -214,18 +214,12 @@ const Form: FC<Props> = (props) => {
 							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
-							<label>Course</label>
+							<label>Curriculum</label>
 							<input
 								type='text'
 								disabled
 								className='form-control'
-								value={
-									selected.subject
-										? `${dayjs(selected.subject?.curriculum?.start_school_date).format('YYYY')} - ${dayjs(
-												selected.subject?.curriculum?.end_school_date
-										  ).format('YYYY')}`
-										: ''
-								}
+								value={selected.subject ? selected.subject.curriculum?.description : ''}
 							/>
 						</div>
 						<div className='form-group col-12 col-md-3'>
