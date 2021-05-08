@@ -11,4 +11,5 @@ export interface TeacherContract extends ModelContract {
 	availability_start: string;
 	availability_end: string;
 	schedules?: ScheduleContract[];
+	days: string[];
 }

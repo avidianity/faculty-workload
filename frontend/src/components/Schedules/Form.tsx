@@ -356,7 +356,8 @@ const Form: FC<Props> = (props) => {
 														<div className='position-relative form-check'>
 															<label
 																className={`form-check-label ${outIf(
-																	selected.teacher === undefined,
+																	selected.teacher === undefined ||
+																		!selected.teacher.days.includes(day.day),
 																	'text-muted'
 																)}`}>
 																<input
@@ -364,12 +365,18 @@ const Form: FC<Props> = (props) => {
 																	className='form-check-input'
 																	checked={day.checked}
 																	onChange={(e) => {
-																		day.checked = !day.checked;
+																		if (selected.teacher && selected.teacher.days.includes(day.day)) {
+																			day.checked = !day.checked;
 
-																		days.splice(index, 1, day);
-																		setDays([...days]);
+																			days.splice(index, 1, day);
+																			setDays([...days]);
+																		}
 																	}}
-																	disabled={processing || selected.teacher === undefined}
+																	disabled={
+																		processing ||
+																		selected.teacher === undefined ||
+																		!selected.teacher.days.includes(day.day)
+																	}
 																/>{' '}
 																{day.day}
 															</label>

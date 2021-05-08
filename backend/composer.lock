@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04e5bdbd853604877f3a15f8bb05f98a",
+    "content-hash": "00e834e270c1e8e629bdba1a29edc174",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6711,16 +6711,16 @@
         },
         {
             "name": "facade/ignition",
-            "version": "2.8.4",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "87fb348dab0ae1a7c206c3e902a5a44ba541742f"
+                "reference": "e7db3b601ce742568b92648818ef903904d20164"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/87fb348dab0ae1a7c206c3e902a5a44ba541742f",
-                "reference": "87fb348dab0ae1a7c206c3e902a5a44ba541742f",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/e7db3b601ce742568b92648818ef903904d20164",
+                "reference": "e7db3b601ce742568b92648818ef903904d20164",
                 "shasum": ""
             },
             "require": {
@@ -6784,7 +6784,7 @@
                 "issues": "https://github.com/facade/ignition/issues",
                 "source": "https://github.com/facade/ignition"
             },
-            "time": "2021-04-29T13:55:26+00:00"
+            "time": "2021-05-05T06:45:12+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -9375,15 +9375,14 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3|^8.0",
-        "ext-gd": "^8.0",
-        "ext-iconv": "^8.0",
-        "ext-pdo_sqlite": "^8.0",
-        "ext-simplexml": "^8.0",
-        "ext-xml": "^8.0",
-        "ext-xmlreader": "^8.0",
-        "ext-zip": "^1.19",
-        "ext-zlib": "^8.0"
+        "php": "^7.4",
+        "ext-gd": "^7.4",
+        "ext-iconv": "^7.4",
+        "ext-pdo_sqlite": "^7.4",
+        "ext-simplexml": "^7.4",
+        "ext-xml": "^7.4",
+        "ext-xmlreader": "^7.4",
+        "ext-zlib": "^7.4"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"

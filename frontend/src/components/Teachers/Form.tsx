@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
 import { EmploymentStatuses } from '../../constants';
 import { handleError, setValues } from '../../helpers';
-import { useMode, useNullable } from '../../hooks';
+import { useArray, useMode, useNullable } from '../../hooks';
 import { teacherService } from '../../services/teacher.service';
 import Flatpickr from 'react-flatpickr';
 import dayjs from 'dayjs';
@@ -19,6 +19,7 @@ type Inputs = {
 	employment_status: string;
 	availability_start: string;
 	availability_end: string;
+	days: string[];
 };
 
 const Form: FC<Props> = (props) => {
@@ -30,6 +31,7 @@ const Form: FC<Props> = (props) => {
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
 	const history = useHistory();
+	const [days, setDays] = useArray<string>();
 
 	const submit = async (payload: Inputs) => {
 		setProcessing(true);
@@ -41,6 +43,8 @@ const Form: FC<Props> = (props) => {
 			if (availabilityEnd) {
 				payload.availability_end = dayjs(availabilityEnd).format('HH:mm:ss');
 			}
+
+			payload.days = days;
 
 			await (mode === 'Add' ? teacherService.create(payload) : teacherService.update(id, payload));
 			toastr.info('Teacher saved successfully.', 'Notice');
@@ -60,6 +64,7 @@ const Form: FC<Props> = (props) => {
 			setValues(teacher, setValue);
 			setAvailabilityStart(dayjs(teacher.availability_start, 'HH:mm:ss').toDate());
 			setAvailabilityEnd(dayjs(teacher.availability_end, 'HH:mm:ss').toDate());
+			setDays(teacher.days);
 			setMode('Edit');
 		} catch (error) {
 			handleError(error);
@@ -196,6 +201,33 @@ const Form: FC<Props> = (props) => {
 								className='form-control'
 								disabled={processing}
 							/>
+						</div>
+						<div className='col-12 mb-3'>
+							<h5>Days</h5>
+							<div className='row'>
+								{['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day, index) => (
+									<div className='col-12 col-md-6 col-lg-4 col-xl-3' key={index}>
+										<div className='position-relative form-check'>
+											<label className='form-check-label'>
+												<input
+													type='checkbox'
+													className='form-check-input'
+													onChange={() => {
+														if (days.includes(day)) {
+															days.splice(days.indexOf(day), 1);
+														} else {
+															days.push(day);
+														}
+														setDays([...days]);
+													}}
+													checked={days.includes(day)}
+												/>{' '}
+												{day}
+											</label>
+										</div>
+									</div>
+								))}
+							</div>
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary' disabled={processing}>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\JSON;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,9 +19,14 @@ class Teacher extends Model
         'employment_status',
         'availability_start',
         'availability_end',
+        'days',
     ];
 
     protected $searchable = ['account_number', 'first_name', 'last_name', 'middle_name', 'email'];
+
+    protected $casts = [
+        'days' => JSON::class,
+    ];
 
     protected static function booted()
     {

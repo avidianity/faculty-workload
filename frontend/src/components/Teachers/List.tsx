@@ -49,6 +49,11 @@ const List: FC<Props> = (props) => {
 						teacher.availability_end,
 						'HH:mm:ss'
 					).format('hh:mm A')}`,
+					days: teacher.days.map((day, index) => (
+						<span className='d-block' key={index}>
+							{day}
+						</span>
+					)),
 					actions: (
 						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
 							<Link to={url(`${teacher.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
@@ -86,6 +91,10 @@ const List: FC<Props> = (props) => {
 				{
 					title: 'Employment Status',
 					accessor: 'employment_status',
+				},
+				{
+					title: 'Days',
+					accessor: 'days',
 				},
 				{
 					title: 'Availability',

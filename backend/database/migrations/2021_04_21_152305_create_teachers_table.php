@@ -26,6 +26,7 @@ class CreateTeachersTable extends Migration
                 'Designee',
                 'Temporary',
             ]);
+            $table->json('days');
             $table->time('availability_start');
             $table->time('availability_end');
             $table->timestamps();
