@@ -44,7 +44,7 @@ const List: FC<Props> = (props) => {
 				items?.map((room) => ({
 					...room,
 					actions: (
-						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
+						<div className={`${outIf(user?.role !== 'Admin', 'd-none', 'd-flex')}`}>
 							<Link to={url(`${room.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 								<i className='fas fa-edit'></i>
 							</Link>

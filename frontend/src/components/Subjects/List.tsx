@@ -78,7 +78,7 @@ const List: FC<Props> = (props) => {
 					.map((subject) => ({
 						...subject,
 						actions: (
-							<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
+							<div className={`${outIf(user?.role !== 'Admin', 'd-none', 'd-flex')}`}>
 								<Link to={url(`${subject.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 									<i className='fas fa-edit'></i>
 								</Link>

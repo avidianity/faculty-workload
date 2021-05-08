@@ -71,7 +71,7 @@ const List: FC<Props> = (props) => {
 						)}PM - ${dayjs(day.end_time_pm, 'HH:mm:ss').format('hh:mm')}PM`}</div>
 					)),
 					actions: (
-						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
+						<div className={`${outIf(user?.role !== 'Admin', 'd-none', 'd-flex')}`}>
 							<Link to={url(`${schedule.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 								<i className='fas fa-edit'></i>
 							</Link>

@@ -49,7 +49,7 @@ const List: FC<Props> = (props) => {
 						</>
 					),
 					actions: (
-						<div className={`d-flex ${outIf(self?.role !== 'Admin', 'd-none')}`}>
+						<div className={`${outIf(self?.role !== 'Admin', 'd-none', 'd-flex')}`}>
 							<Link to={url(`${user.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 								<i className='fas fa-edit'></i>
 							</Link>

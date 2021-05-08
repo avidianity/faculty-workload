@@ -47,7 +47,7 @@ const List: FC<Props> = (props) => {
 					start_school_date: dayjs(curriculum.start_school_date).format('MMMM DD, YYYY'),
 					end_school_date: dayjs(curriculum.end_school_date).format('MMMM DD, YYYY'),
 					actions: (
-						<div className={`d-flex ${outIf(user?.role !== 'Admin', 'd-none')}`}>
+						<div className={`${outIf(user?.role !== 'Admin', 'd-none', 'd-flex')}`}>
 							<Link to={url(`${curriculum.id}/edit`)} className='btn btn-warning btn-sm mx-1'>
 								<i className='fas fa-edit'></i>
 							</Link>
