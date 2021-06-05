@@ -45,10 +45,23 @@ const List: FC<Props> = (props) => {
 				items?.map((teacher) => ({
 					...teacher,
 					name: `${teacher.last_name}, ${teacher.first_name} ${teacher.middle_name || ''}`,
-					availability: `${dayjs(teacher.availability_start, 'HH:mm:ss').format('hh:mm A')} - ${dayjs(
-						teacher.availability_end,
-						'HH:mm:ss'
-					).format('hh:mm A')}`,
+					availability: (
+						<div>
+							{teacher.start_time_am && teacher.end_time_am
+								? `${dayjs(teacher.start_time_am, 'HH:mm:ss').format('hh:mm A')}AM - ${dayjs(
+										teacher.end_time_am,
+										'HH:mm:ss'
+								  ).format('hh:mm A')}AM`
+								: null}
+							<br />
+							{teacher.start_time_pm && teacher.end_time_pm
+								? `${dayjs(teacher.start_time_pm, 'HH:mm:ss').format('hh:mm')}PM - ${dayjs(
+										teacher.end_time_pm,
+										'HH:mm:ss'
+								  ).format('hh:mm')}PM`
+								: null}
+						</div>
+					),
 					days: teacher.days.map((day, index) => (
 						<span className='d-block' key={index}>
 							{day}

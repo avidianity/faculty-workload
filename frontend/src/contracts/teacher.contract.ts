@@ -8,8 +8,10 @@ export interface TeacherContract extends ModelContract {
 	last_name: string;
 	email: string;
 	employment_status: string;
-	availability_start: string;
-	availability_end: string;
+	start_time_am?: string;
+	end_time_am?: string;
+	start_time_pm?: string;
+	end_time_pm?: string;
 	schedules?: ScheduleContract[];
 	days: string[];
 }

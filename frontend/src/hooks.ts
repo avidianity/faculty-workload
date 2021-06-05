@@ -18,3 +18,7 @@ export function useNullable<T>(data?: T) {
 export function useArray<T>(data: T[] = []) {
 	return useState<T[]>(data);
 }
+
+export function usePartial<T>(data: Partial<T>) {
+	return useState<Partial<T>>(data);
+}

@@ -27,8 +27,10 @@ class CreateTeachersTable extends Migration
                 'Temporary',
             ]);
             $table->json('days');
-            $table->time('availability_start');
-            $table->time('availability_end');
+            $table->time('start_time_am')->nullable();
+            $table->time('end_time_am')->nullable();
+            $table->time('start_time_pm')->nullable();
+            $table->time('end_time_pm')->nullable();
             $table->timestamps();
         });
     }

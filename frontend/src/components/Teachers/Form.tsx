@@ -7,6 +7,7 @@ import { useArray, useMode, useNullable } from '../../hooks';
 import { teacherService } from '../../services/teacher.service';
 import Flatpickr from 'react-flatpickr';
 import dayjs from 'dayjs';
+import { time } from 'node:console';
 
 type Props = {};
 
@@ -17,16 +18,24 @@ type Inputs = {
 	last_name: string;
 	email: string;
 	employment_status: string;
-	availability_start: string;
-	availability_end: string;
+	start_time_am?: string;
+	end_time_am?: string;
+	start_time_pm?: string;
+	end_time_pm?: string;
 	days: string[];
+};
+
+type Times = {
+	start_time_am: Date;
+	end_time_am: Date;
+	start_time_pm: Date;
+	end_time_pm: Date;
 };
 
 const Form: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
 	const { register, handleSubmit, setValue } = useForm<Inputs>();
-	const [availabilityStart, setAvailabilityStart] = useNullable<Date>();
-	const [availabilityEnd, setAvailabilityEnd] = useNullable<Date>();
+	const [times, setTimes] = useState<Partial<Times>>({});
 	const [mode, setMode] = useMode();
 	const [id, setID] = useNullable<number>();
 	const match = useRouteMatch<{ id: string }>();
@@ -36,12 +45,20 @@ const Form: FC<Props> = (props) => {
 	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
-			if (availabilityStart) {
-				payload.availability_start = dayjs(availabilityStart).format('HH:mm:ss');
+			if (times.start_time_am) {
+				payload.start_time_am = dayjs(times.start_time_am).format('HH:mm:ss');
 			}
 
-			if (availabilityEnd) {
-				payload.availability_end = dayjs(availabilityEnd).format('HH:mm:ss');
+			if (times.end_time_am) {
+				payload.end_time_am = dayjs(times.end_time_am).format('HH:mm:ss');
+			}
+
+			if (times.start_time_pm) {
+				payload.start_time_pm = dayjs(times.start_time_pm).format('HH:mm:ss');
+			}
+
+			if (times.end_time_pm) {
+				payload.end_time_pm = dayjs(times.end_time_pm).format('HH:mm:ss');
 			}
 
 			payload.days = days;
@@ -62,8 +79,23 @@ const Form: FC<Props> = (props) => {
 			setID(teacher.id!);
 
 			setValues(teacher, setValue);
-			setAvailabilityStart(dayjs(teacher.availability_start, 'HH:mm:ss').toDate());
-			setAvailabilityEnd(dayjs(teacher.availability_end, 'HH:mm:ss').toDate());
+
+			if (teacher.start_time_am) {
+				setTimes({ ...times, start_time_am: dayjs(teacher.start_time_am, 'HH:mm:ss').toDate() });
+			}
+
+			if (teacher.end_time_am) {
+				setTimes({ ...times, end_time_am: dayjs(teacher.end_time_am, 'HH:mm:ss').toDate() });
+			}
+
+			if (teacher.start_time_pm) {
+				setTimes({ ...times, start_time_pm: dayjs(teacher.start_time_pm, 'HH:mm:ss').toDate() });
+			}
+
+			if (teacher.end_time_pm) {
+				setTimes({ ...times, end_time_pm: dayjs(teacher.end_time_pm, 'HH:mm:ss').toDate() });
+			}
+
 			setDays(teacher.days);
 			setMode('Edit');
 		} catch (error) {
@@ -161,7 +193,10 @@ const Form: FC<Props> = (props) => {
 						<div className='col-12'>
 							<h5>Availability</h5>
 						</div>
-						<div className='form-group col-12 col-md-6'>
+						<div className='col-12 py-3'>
+							<h6>AM</h6>
+						</div>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='availability_start'>Start Time</label>
 							<Flatpickr
 								options={{
@@ -169,10 +204,10 @@ const Form: FC<Props> = (props) => {
 									mode: 'time',
 									altInput: true,
 								}}
-								value={availabilityStart || ''}
+								value={times.start_time_am}
 								onChange={(dates) => {
 									if (dates.length > 0) {
-										setAvailabilityStart(dates[0]);
+										setTimes({ ...times, start_time_am: dates[0] });
 									}
 								}}
 								name='availability_start'
@@ -181,19 +216,63 @@ const Form: FC<Props> = (props) => {
 								disabled={processing}
 							/>
 						</div>
-						<div className='form-group col-12 col-md-6'>
+						<div className='form-group col-12 col-md-3'>
 							<label htmlFor='availability_end'>End Time</label>
 							<Flatpickr
 								options={{
 									altFormat: 'G:i K',
 									mode: 'time',
-									minTime: availabilityStart || undefined,
+									minTime: times.start_time_am,
 									altInput: true,
 								}}
-								value={availabilityEnd || ''}
+								value={times.end_time_am}
 								onChange={(dates) => {
 									if (dates.length > 0) {
-										setAvailabilityEnd(dates[0]);
+										setTimes({ ...times, end_time_am: dates[0] });
+									}
+								}}
+								name='availability_end'
+								id='availability_end'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='col-12 py-3'>
+							<h6>PM</h6>
+						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label htmlFor='availability_start'>Start Time</label>
+							<Flatpickr
+								options={{
+									altFormat: 'G:i K',
+									mode: 'time',
+									altInput: true,
+								}}
+								value={times.start_time_pm}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setTimes({ ...times, start_time_pm: dates[0] });
+									}
+								}}
+								name='availability_start'
+								id='availability_start'
+								className='form-control'
+								disabled={processing}
+							/>
+						</div>
+						<div className='form-group col-12 col-md-3'>
+							<label htmlFor='availability_end'>End Time</label>
+							<Flatpickr
+								options={{
+									altFormat: 'G:i K',
+									mode: 'time',
+									minTime: times.end_time_pm,
+									altInput: true,
+								}}
+								value={times.end_time_pm}
+								onChange={(dates) => {
+									if (dates.length > 0) {
+										setTimes({ ...times, end_time_pm: dates[0] });
 									}
 								}}
 								name='availability_end'
